@@ -3,7 +3,7 @@ from fastapi import FastAPI, status, HTTPException
 from fastapi.responses import Response #* to manage response 
 from pydantic import BaseModel #* we need `BaseModel` for setting schemas
 from random import randint
-
+from rich import print
 
 app = FastAPI()
 
@@ -91,6 +91,7 @@ def get_post(id: int):
 #* add delete post route 
 @app.delete("/posts/{id}")
 def delete_post(id: int):
+
     if find_post(id) != None:
         temp_copy = find_post(id).copy() #*=> make copy to show in response
         database.remove(find_post(id)) #*=> remove the post from database
@@ -102,6 +103,20 @@ def delete_post(id: int):
         # we must return just [204] code without any data
         return Response( status_code = status.HTTP_204_NO_CONTENT )
 
+
+    raise HTTPException( 
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail={ "data": "Not Found" }
+    )
+
+
+#* add update  post route using "PUT"
+@app.put("/posts/{id}")
+def update_post(id: int, post :Post):
+    if find_post(id) != None:
+        find_post(id).update(post.dict()) #* convert post -> dict and update post
+        # print(f"[red bold] {find_post(id)} [/red bold]") #* see the target post
+        return {"data": find_post(id)}
 
     raise HTTPException( 
         status_code=status.HTTP_404_NOT_FOUND,
