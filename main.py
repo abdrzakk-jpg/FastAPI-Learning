@@ -5,7 +5,22 @@ from pydantic import BaseModel #* we need `BaseModel` for setting schemas
 from random import randint
 from rich import print
 
-app = FastAPI()
+from scalar_fastapi import get_scalar_api_reference
+
+
+app = FastAPI(
+    docs_url=None,   # تعطيل Swagger
+    redoc_url=None,  # تعطيل ReDoc
+)
+
+#* ===================|Updating-Docs-UI|=================== *#
+@app.get("/docs", include_in_schema=False)
+async def scalar_docs():
+    return get_scalar_api_reference(
+        openapi_url=app.openapi_url,
+        title="API Docs",
+    )
+#* ======================================================== *#
 
 @app.get("/") # "/" => path, .get => method 
 def root():
