@@ -76,10 +76,29 @@ def create_post(post_body: Post):
 
 #* getting post by ID
 @app.get("/posts/{id}")
-def get_post(id: int, res: Response):
+def get_post(id: int):
     #* add return with `find_post(id)` value verification
     if find_post(id) != None:
         return { "data": find_post(id) }
+
+    raise HTTPException( 
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail={ "data": "Not Found" }
+    )
+
+
+
+#* add delete post route 
+@app.delete("/posts/{id}")
+def delete_post(id: int):
+    if find_post(id) != None:
+        temp_copy = find_post(id).copy() #*=> make copy to show in response
+        database.remove(find_post(id)) #*=> remove the post from database
+
+        return { "data": "deleted",
+                "post": temp_copy,
+                # "posts": database #*=> to insure the deletion of post
+                }
 
     raise HTTPException( 
         status_code=status.HTTP_404_NOT_FOUND,
