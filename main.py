@@ -50,8 +50,8 @@ def find_post(id: int):
 @app.get("/posts")
 def get_posts():
     return {
-        "data": database
-    }
+            "data": database
+        }
     
 
 
@@ -63,22 +63,23 @@ class Post(BaseModel):
     rating: Optional[int] = None #*=> make rating Optional
     
 #* /createpost => /posts: for good practiceies
-@app.post("/posts")
+@app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_post(post_body: Post):
     post_dict = post_body.dict()
     post_dict["ID"] = randint(1, 1000000) #* make ID for new post
     database.append(post_dict) #* add post in db
     return {        
-        "data":database, #* include the sended data in response    
-        "msg": "Post Created Successfully "
+            "data":database, #* include the sended data in response
+            "msg": "Post Created Successfully "
         }
+    
 
 #* getting post by ID
 @app.get("/posts/{id}")
 def get_post(id: int, res: Response):
     #* add return with `find_post(id)` value verification
     if find_post(id) != None:
-        return { "data": find_post(id)}
+        return { "data": find_post(id) }
 
     raise HTTPException( 
         status_code=status.HTTP_404_NOT_FOUND,
