@@ -1,6 +1,6 @@
-
-from fastapi import FastAPI, Request, Body
-
+from typing import Optional
+from fastapi import FastAPI, Request
+from pydantic import BaseModel #* we need `BaseModel` for setting schemas
 app = FastAPI()
 @app.get("/") # "/" => path, .get => method 
 def root():
@@ -13,3 +13,21 @@ def get_posts(req: Request):
         "data": "post 1"
     }
     
+
+
+#* to Force the client to send a strict body of data, we must use `BaseModel` to set Schema of Request's
+class Post(BaseModel):
+    title: str
+    content: str
+    published: bool = True #*=> set defualt value
+    rating: Optional[int] = None #*=> make rating Optional
+    
+    
+    
+@app.post("/createpost")
+# `Body()` saving recieved data in a dict
+def create_post(post_body: Post):
+    return {
+        "data":post_body.dict(), #* include the sended data in response    
+        "msg": "Post Created Successfully "
+        }
