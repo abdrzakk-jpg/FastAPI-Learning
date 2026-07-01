@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI, status #* import status to manage response codes 
+from fastapi import FastAPI, status, HTTPException 
 from fastapi.responses import Response #* to manage response 
 from pydantic import BaseModel #* we need `BaseModel` for setting schemas
 from random import randint
@@ -13,9 +13,29 @@ def root():
 
 database = [
     {
-        "title":"title 1",
-        "content":"content content content content",
-        "ID":1
+        "ID": 1,
+        "title": "Getting Started with Python",
+        "content": "Python is an easy-to-learn programming language suitable for beginners."
+    },
+    {
+        "ID": 2,
+        "title": "Introduction to FastAPI",
+        "content": "FastAPI allows you to build high-performance APIs with minimal code."
+    },
+    {
+        "ID": 3,
+        "title": "Working with Git",
+        "content": "Git helps you track changes in your code and collaborate with others."
+    },
+    {
+        "ID": 4,
+        "title": "Learning SQL",
+        "content": "SQL is used to manage and query relational databases efficiently."
+    },
+    {
+        "ID": 5,
+        "title": "REST API Basics",
+        "content": "REST APIs use HTTP methods such as GET, POST, PUT, and DELETE."
     }
 ]
 #* func to get post by ID
@@ -59,7 +79,8 @@ def get_post(id: int, res: Response):
     #* add return with `find_post(id)` value verification
     if find_post(id) != None:
         return { "data": find_post(id)}
-    
-    res.status_code = status.HTTP_404_NOT_FOUND #* change status_code to 404
-    
-    return { "data": "Not Found" }
+
+    raise HTTPException( 
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail={ "data": "Not Found" }
+    )
