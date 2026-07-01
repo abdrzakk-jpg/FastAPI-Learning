@@ -1,5 +1,6 @@
 from typing import Optional
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, status #* import status to manage response codes 
+from fastapi.responses import Response #* to manage response 
 from pydantic import BaseModel #* we need `BaseModel` for setting schemas
 from random import randint
 
@@ -14,12 +15,20 @@ database = [
     {
         "title":"title 1",
         "content":"content content content content",
-        "ID":0
+        "ID":1
     }
 ]
+#* func to get post by ID
+def find_post(id: int):
+    for p in database:
+        if p["ID"] == id:
+            return p
+    
+    return None #* if "ID" not found
+    
 
 @app.get("/posts")
-def get_posts(req: Request):
+def get_posts():
     return {
         "data": database
     }
@@ -44,4 +53,13 @@ def create_post(post_body: Post):
         "msg": "Post Created Successfully "
         }
 
-
+#* getting post by ID
+@app.get("/posts/{id}")
+def get_post(id: int, res: Response):
+    #* add return with `find_post(id)` value verification
+    if find_post(id) != None:
+        return { "data": find_post(id)}
+    
+    res.status_code = status.HTTP_404_NOT_FOUND #* change status_code to 404
+    
+    return { "data": "Not Found" }
