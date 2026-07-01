@@ -95,10 +95,13 @@ def delete_post(id: int):
         temp_copy = find_post(id).copy() #*=> make copy to show in response
         database.remove(find_post(id)) #*=> remove the post from database
 
-        return { "data": "deleted",
-                "post": temp_copy,
-                # "posts": database #*=> to insure the deletion of post
-                }
+        #! HTTP_204_NO_CONTENT == no content in response
+        # return { "data": "deleted",
+        #         "post": temp_copy,
+        #         }
+        # we must return just [204] code without any data
+        return Response( status_code = status.HTTP_204_NO_CONTENT )
+
 
     raise HTTPException( 
         status_code=status.HTTP_404_NOT_FOUND,
