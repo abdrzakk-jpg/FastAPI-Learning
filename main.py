@@ -6,11 +6,18 @@ app = FastAPI()
 def root():
     return {"msg":"hello api !!!"} 
 
+database = [
+    {
+        "title":"title 1",
+        "content":"content content content content",
+        "ID":0
+    }
+]
 
 @app.get("/posts")
 def get_posts(req: Request):
     return {
-        "data": "post 1"
+        "data": database
     }
     
 
@@ -22,12 +29,10 @@ class Post(BaseModel):
     published: bool = True #*=> set defualt value
     rating: Optional[int] = None #*=> make rating Optional
     
-    
-    
-@app.post("/createpost")
-# `Body()` saving recieved data in a dict
+#* /createpost => /posts: for good practiceies
+@app.post("/posts")
 def create_post(post_body: Post):
     return {
-        "data":post_body.dict(), #* include the sended data in response    
+        "data":database, #* include the sended data in response    
         "msg": "Post Created Successfully "
         }
