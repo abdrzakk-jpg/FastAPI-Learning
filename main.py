@@ -1,7 +1,11 @@
 from typing import Optional
 from fastapi import FastAPI, Request
 from pydantic import BaseModel #* we need `BaseModel` for setting schemas
+from random import randint
+
+
 app = FastAPI()
+
 @app.get("/") # "/" => path, .get => method 
 def root():
     return {"msg":"hello api !!!"} 
@@ -32,7 +36,12 @@ class Post(BaseModel):
 #* /createpost => /posts: for good practiceies
 @app.post("/posts")
 def create_post(post_body: Post):
-    return {
+    post_dict = post_body.dict()
+    post_dict["ID"] = randint(1, 1000000) #* make ID for new post
+    database.append(post_dict) #* add post in db
+    return {        
         "data":database, #* include the sended data in response    
         "msg": "Post Created Successfully "
         }
+
+
