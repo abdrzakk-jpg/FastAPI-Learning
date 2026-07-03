@@ -135,22 +135,38 @@ def create_post(post: Post):
         print(f"[red bold]|____Error:[/red bold]{err}")
         raise HTTPException( 
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={ 
-                "data": "insertion faild" ,
-                "detail": err
-            }
+            detail={ "Post Not Fount" }
         )
 #* get post by ID
-@app.get("/posts/{id}")
-def get_post(id: int):
-    #* add return with `find_post(id)` value verification
-    if find_post(id) != None:
-        return { "data": find_post(id) }
+@app.get("/posts/{post_id}")
+def get_post(post_id: int):
+    try: 
+        cursor.execute(
+            "SELECT * FROM posts WHERE id=%s",
+            (post_id,)
+        )
 
-    raise HTTPException( 
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail={ "data": "Not Found" }
-    )
+        post_detail = cursor.fetchone()
+        if post_detail:
+            return {
+                "data": post_detail
+            }
+        else:
+            raise HTTPException( 
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Not Found"
+            )
+    # * to fully `raise HTTPException` with status-code & detail
+    except HTTPException:
+        raise 
+
+    except Exception as err:
+        print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
+        print(f"[red bold]|____Error:[/red bold]{err}")
+        raise HTTPException( 
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={ err }
+        )
 
 
 
@@ -159,14 +175,7 @@ def get_post(id: int):
 def delete_post(id: int):
 
     if find_post(id) != None:
-        temp_copy = find_post(id).copy() #*=> make copy to show in response
         database.remove(find_post(id)) #*=> remove the post from database
-
-        #! HTTP_204_NO_CONTENT == no content in response
-        # return { "data": "deleted",
-        #         "post": temp_copy,
-        #         }
-        # we must return just [204] code without any data
         return Response( status_code = status.HTTP_204_NO_CONTENT )
 
 
