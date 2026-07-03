@@ -4,14 +4,46 @@ from fastapi.responses import Response #* to manage response
 from pydantic import BaseModel #* we need `BaseModel` for setting schemas
 from random import randint
 from rich import print
-
-from scalar_fastapi import get_scalar_api_reference
+import psycopg as psy # add 'postgreSQL' DBMS for python
+from psycopg.rows import dict_row  # dict_row => converts result to python-dict
+from scalar_fastapi import get_scalar_api_reference # UI enhancement
 
 
 app = FastAPI(
     docs_url=None,   # تعطيل Swagger
     redoc_url=None,  # تعطيل ReDoc
 )
+
+try:
+    conn = psy.connect(
+        host="localhost",
+        dbname="postgres",
+        user="postgres",
+        password="123",
+        port=5432,
+        #* in tutorial the prof used RealDictCursor wich is `replaced` in psycopg3
+    )
+    #* RealDictCursor alternative 
+    cursor = conn.cursor(
+        row_factory=dict_row
+    )
+
+    print(f"[blue bold]:: [white]DB Connection: [green bold][✓][/green bold]")
+
+    print()
+
+
+
+
+
+
+
+except Exception as e:
+    print(f"[blue bold]:: [white]DB Connection: [red bold][✖][/red bold]")
+    print(f"[red bold]|____Error:[/red bold]{e}")
+
+
+
 
 #* ===================|Updating-Docs-UI|=================== *#
 @app.get("/docs", include_in_schema=False)
@@ -75,7 +107,7 @@ class Post(BaseModel):
     title: str
     content: str
     published: bool = True #*=> set defualt value
-    rating: Optional[int] = None #*=> make rating Optional
+
     
 #* /createpost => /posts: for good practiceies
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
@@ -89,7 +121,7 @@ def create_post(post_body: Post):
         }
     
 
-#* getting post by ID
+#* get post by ID
 @app.get("/posts/{id}")
 def get_post(id: int):
     #* add return with `find_post(id)` value verification
@@ -103,7 +135,7 @@ def get_post(id: int):
 
 
 
-#* add delete post route 
+#* delete post route 
 @app.delete("/posts/{id}")
 def delete_post(id: int):
 
@@ -125,7 +157,7 @@ def delete_post(id: int):
     )
 
 
-#* add update  post route using "PUT"
+#* update  post route using "PUT"
 @app.put("/posts/{id}")
 def update_post(id: int, post :Post):
     if find_post(id) != None:
