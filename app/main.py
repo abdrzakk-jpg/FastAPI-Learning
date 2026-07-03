@@ -5,7 +5,7 @@ from rich import print
 import psycopg as psy # add 'postgreSQL' DBMS for python
 from psycopg.rows import dict_row  # dict_row => converts result to python-dict
 from scalar_fastapi import get_scalar_api_reference # UI enhancement
-    
+
 
 app = FastAPI(
     docs_url=None,   # تعطيل Swagger
@@ -21,6 +21,7 @@ try:
         port=5432,
         #* in tutorial the prof used RealDictCursor wich is `replaced` in psycopg3
     )
+    
     #* RealDictCursor alternative 
     cursor = conn.cursor(
         row_factory=dict_row
