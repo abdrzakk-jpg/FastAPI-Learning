@@ -184,13 +184,18 @@ def delete_post(post_id: int):
 
 #* add update  post route using "PUT"
 @app.put("/posts/{id}")
-def update_post(id: int, post :Post):
-    if find_post(id) != None:
-        find_post(id).update(post.dict()) #* convert post -> dict and update post
-        # print(f"[red bold] {find_post(id)} [/red bold]") #* see the target post
-        return {"data": find_post(id)}
+def update_post(id: int, post :Post):   
 
-    raise HTTPException( 
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail={ "data": "Not Found" }
-    )
+    cursor.execute(f"UPDATE posts SET title=%s, content=%s, published=%s WHERE id=%s RETURNING *;", (post.title,post.content, post.published, str(id)))
+
+    updated_post = cursor.fetchone()
+
+    if updated_post is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Post not found"
+        )
+
+    conn.commit()
+
+    return {"data": updated_post}
