@@ -112,16 +112,34 @@ class Post(BaseModel):
     
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_post(post: Post):
-    #* create post & return (title, content, published)
-    cursor.execute(f"""
-    INSERT INTO posts(title, content, published) VALUES ('{post.title}', '{post.content}', {post.published}) RETURNING title, content, published; 
-    """)
-    created_post = cursor.fetchone()
-    return {        
-            "data": created_post, #* include the created post
-            "msg": "Post Created Successfully "
-        }
-
+    #! UN-RECOMENDED: SQL-Ijnection threat 
+    '''
+        cursor.execute(f"""
+        INSERT INTO posts(title, content, published) VALUES ('{post.title}', '{post.content}', {post.published}) ; 
+        """)    
+    '''
+    
+    try:
+        #* RECOMENDED: filterd way (psycopg interact with SQL queries)
+        cursor.execute(f"""
+        INSERT INTO posts(title, content, published) VALUES (%s, %s, %s) RETURNING *; 
+        """, (post.title, post.content, post.published))
+        created_post = cursor.fetchone() #* return values (will not work without `RETURNING ..`)
+        conn.commit() #* => save changes
+        return {        
+                "data": created_post, #* include the created post
+                "msg": "Post Created Successfully "
+            }
+    except Exception as err:
+        print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
+        print(f"[red bold]|____Error:[/red bold]{err}")
+        raise HTTPException( 
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={ 
+                "data": "insertion faild" ,
+                "detail": err
+            }
+        )
 #* get post by ID
 @app.get("/posts/{id}")
 def get_post(id: int):
