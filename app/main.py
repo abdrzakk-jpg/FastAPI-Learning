@@ -1,10 +1,29 @@
 from fastapi import FastAPI, status, HTTPException 
 from fastapi.responses import Response #* to manage response 
 from pydantic import BaseModel #* we need `BaseModel` for setting schemas
-from rich import print
+
 import psycopg as psy # add 'postgreSQL' DBMS for python
 from psycopg.rows import dict_row  # dict_row => converts result to python-dict
+
+from rich import print
 from scalar_fastapi import get_scalar_api_reference # UI enhancement
+
+
+from . import models
+from .database import engine, SessionLocal
+
+#* create models in `posts` table
+models.Base.metadata.create_all(bind=engine)
+
+#* define get_db dependency
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 
 
 app = FastAPI(
@@ -21,7 +40,7 @@ try:
         port=5432,
         #* in tutorial the prof used RealDictCursor wich is `replaced` in psycopg3
     )
-    
+
     #* RealDictCursor alternative 
     cursor = conn.cursor(
         row_factory=dict_row
