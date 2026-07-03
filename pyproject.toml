@@ -8,4 +8,5 @@ dependencies = [
     "fastapi[standard]>=0.138.2",
     "psycopg>=3.3.4",
     "scalar-fastapi>=1.8.2",
+    "sqlalchemy>=2.0.51",
 ]

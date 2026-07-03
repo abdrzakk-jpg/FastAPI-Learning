@@ -237,5 +237,3 @@
 * <span style="background: -webkit-linear-gradient(180deg,  #a6fe84, #4efa0f); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"><b>Good Practicies 💫: </b></span>:
     - **<span style="color: #bb0ffa">Write SQL Keywords in Upper-Case</span>**
     - **<span style="color: #bb0ffa">Always Put Strings inside 'single-quote'</span>**
-    - **<span style="color: #bb0ffa">Write SQL Keywords in Upper-Case</span>**
-    - **<span style="color: #bb0ffa">Write SQL Keywords in Upper-Case</span>**
