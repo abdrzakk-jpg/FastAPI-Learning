@@ -110,17 +110,17 @@ class Post(BaseModel):
     published: bool = True #*=> set defualt value
 
     
-#* /createpost => /posts: for good practiceies
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(post_body: Post):
-    post_dict = post_body.dict()
-    post_dict["ID"] = randint(1, 1000000) #* make ID for new post
-    database.append(post_dict) #* add post in db
+def create_post(post: Post):
+    #* create post & return (title, content, published)
+    cursor.execute(f"""
+    INSERT INTO posts(title, content, published) VALUES ('{post.title}', '{post.content}', {post.published}) RETURNING title, content, published; 
+    """)
+    created_post = cursor.fetchone()
     return {        
-            "data":database, #* include the sended data in response
+            "data": created_post, #* include the created post
             "msg": "Post Created Successfully "
         }
-    
 
 #* get post by ID
 @app.get("/posts/{id}")
