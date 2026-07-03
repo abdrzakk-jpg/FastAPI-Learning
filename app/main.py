@@ -96,9 +96,10 @@ def find_post(id: int):
 
 @app.get("/posts")
 def get_posts():
-    return {
-            "data": database
-        }
+    cursor.execute("SELECT * FROM posts")
+    
+    posts = cursor.fetchall() #* .fetchall() => get all posts
+    return {"data":posts}
     
 
 
