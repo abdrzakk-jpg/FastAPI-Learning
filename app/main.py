@@ -1,8 +1,6 @@
-from typing import Optional
 from fastapi import FastAPI, status, HTTPException 
 from fastapi.responses import Response #* to manage response 
 from pydantic import BaseModel #* we need `BaseModel` for setting schemas
-from random import randint
 from rich import print
 import psycopg as psy # add 'postgreSQL' DBMS for python
 from psycopg.rows import dict_row  # dict_row => converts result to python-dict
@@ -29,13 +27,6 @@ try:
     )
 
     print(f"[blue bold]:: [white]DB Connection: [green bold][✓][/green bold]")
-
-    print()
-
-
-
-
-
 
 
 except Exception as e:
@@ -143,7 +134,7 @@ def get_post(post_id: int):
     try: 
         cursor.execute(
             "SELECT * FROM posts WHERE id=%s",
-            (post_id,)
+            (str(post_id),)
         )
 
         post_detail = cursor.fetchone()
@@ -171,21 +162,27 @@ def get_post(post_id: int):
 
 
 #* delete post route 
-@app.delete("/posts/{id}")
-def delete_post(id: int):
+@app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(post_id: int):
+    try: 
 
-    if find_post(id) != None:
-        database.remove(find_post(id)) #*=> remove the post from database
-        return Response( status_code = status.HTTP_204_NO_CONTENT )
+        cursor.execute(
+            "DELETE FROM posts WHERE id=%s",
+            (str(post_id),)
+        )
+
+        conn.commit()
+
+    except Exception as err:
+        print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
+        print(f"[red bold]|____Error:[/red bold]{err}")
+        raise HTTPException( 
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={ err }
+        )
 
 
-    raise HTTPException( 
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail={ "data": "Not Found" }
-    )
-
-
-#* update  post route using "PUT"
+#* add update  post route using "PUT"
 @app.put("/posts/{id}")
 def update_post(id: int, post :Post):
     if find_post(id) != None:
