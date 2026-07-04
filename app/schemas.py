@@ -13,11 +13,8 @@ class PostCreate(PostBase): pass
 class PostUpdate(PostBase): pass
 
 #* define the structure returned Post-Data in response 
-class PostResponse(BaseModel):
-    title: str
-    content: str
-    published: bool 
-    #! 
+class PostResponse(PostBase): #* inherite [title, content, published] from `PostBase` 
+    id: int
     created_at: datetime 
 
     #* the following line: make Pydantic to handle with SQLAlchemy-Models 

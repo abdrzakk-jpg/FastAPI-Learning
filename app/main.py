@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import FastAPI, status, HTTPException , Depends
 
 import psycopg as psy # add 'postgreSQL' DBMS for python
@@ -66,8 +67,11 @@ async def scalar_docs():
 def root():
     return {"msg":"hello api !!!"} 
 
+#* to retrun a Group Of Posts in Response => we cover `schemas.PostResponse` within List[...] in `response_model`
+#* Why?: The Pydantic Trying To Put Many Objects in PostRespnse and fails !
+#* so we make a `List` of `PostResponse-Scheme` To give `Pydantic` ability to create many `PostResponse` Objects
 
-@app.get("/posts", status_code=status.HTTP_200_OK)
+@app.get("/posts", status_code=status.HTTP_200_OK, response_model=List[schemas.PostResponse])
 def get_posts(db: Session = Depends(get_db)):
 
     # cursor.execute("SELECT * FROM posts")
@@ -90,7 +94,7 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
         #* USE-FUL WAY : to avoid last problem, we can use `**` before `post.dict()` to create a dict and distribute the values
         created_post = models.Post(**post.dict())
         
-        
+
         # true insertion to database
         db.add(created_post)
         db.commit() # save changes
