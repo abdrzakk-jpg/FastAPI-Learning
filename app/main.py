@@ -1,12 +1,12 @@
-from fastapi import FastAPI, status, HTTPException 
-from fastapi.responses import Response #* to manage response 
+from fastapi import FastAPI, status, HTTPException , Depends
 from pydantic import BaseModel #* we need `BaseModel` for setting schemas
 
 import psycopg as psy # add 'postgreSQL' DBMS for python
 from psycopg.rows import dict_row  # dict_row => converts result to python-dict
 
 from rich import print
-from scalar_fastapi import get_scalar_api_reference # UI enhancement
+from scalar_fastapi import get_scalar_api_reference
+from sqlalchemy.orm import Session # UI enhancement
 
 
 from . import models
@@ -71,10 +71,11 @@ def root():
 
 
 @app.get("/posts")
-def get_posts():
-    cursor.execute("SELECT * FROM posts")
-    
-    posts = cursor.fetchall() #* .fetchall() => get all posts
+def get_posts(db: Session = Depends(get_db)):
+    # cursor.execute("SELECT * FROM posts")
+    # posts = cursor.fetchall() #* .fetchall() => get all posts
+
+    posts = db.query(models.Post).all()
     return {"data":posts}
     
 
