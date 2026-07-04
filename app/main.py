@@ -73,7 +73,7 @@ def get_posts(db: Session = Depends(get_db)):
     # posts = cursor.fetchall() #* .fetchall() => get all posts
 
     posts = db.query(models.Post).all()
-    return {"data":posts}
+    return posts
 
 
     
@@ -94,10 +94,8 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
         db.commit() # save changes
         db.refresh(created_post)
 
-        return {        
-                "data": created_post, #* include the created post
-                "msg": "Post Created Successfully "
-        }
+        return created_post, #* include the created post
+    
     except Exception as err:
         print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
         print(f"[red bold]|____Error:[/red bold]{err}")
@@ -119,9 +117,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
                 detail="Not Found"
             )
 
-        return {
-            "detail": post_detail
-        }
+        return post_detail
         
     # * tell `try:` to avoid HTTPException's
     except HTTPException:
@@ -175,7 +171,9 @@ def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(ge
 
         # get the post
         post_query = db.query(models.Post).filter(models.Post.id == post_id)
+
         updated_post = post_query.first()
+
         print(f"[blue bold]{updated_post}[/blue bold]")
         # catch the first one
         if updated_post is None:
@@ -188,7 +186,7 @@ def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(ge
 
         db.commit() # save changes
         db.refresh(updated_post)
-        return {"detail": updated_post}
+        return updated_post
 
     # * tell `try:` to avoid HTTPException's
     except HTTPException:
