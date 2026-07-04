@@ -75,10 +75,8 @@ def get_posts(db: Session = Depends(get_db)):
 
     posts = db.query(models.Post).all()
     return {"data":posts}
-    
 
-
-#* to Force the client to send a strict body of data, we must use `BaseModel` to set Schema of Request's
+#! We Need this Schema to set the `post` Structure
 class Post(BaseModel):
     title: str
     content: str
@@ -86,25 +84,26 @@ class Post(BaseModel):
 
     
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(post: Post):
-    #! UN-RECOMENDED: SQL-Ijnection threat 
-    '''
-        cursor.execute(f"""
-        INSERT INTO posts(title, content, published) VALUES ('{post.title}', '{post.content}', {post.published}) ; 
-        """)    
-    '''
-    
+#! I used `models.Post` instead `Post` and thats is WRONG!!!
+
+def create_post(post: Post, db: Session = Depends(get_db)):
     try:
-        #* RECOMENDED: filterd way (psycopg interact with SQL queries)
-        cursor.execute(f"""
-        INSERT INTO posts(title, content, published) VALUES (%s, %s, %s) RETURNING *; 
-        """, (post.title, post.content, post.published))
-        created_post = cursor.fetchone() #* return values (will not work without `RETURNING ..`)
-        conn.commit() #* => save changes
+        
+        #! USE-LESS WAY: Passing each value to its var like below.... is a use-less in large model cases (like 10,20,30 column !)
+        USE_LESS_created_post = models.Post(title = post.title, content = post.content, published = post.published)
+
+        #* USE-FUL  WAY: to avoid last problem, we can use `**` before `post.dict()` to create a dict and distribute the values
+        created_post = models.Post(**post.dict())
+        
+        # true insertion to database
+        db.add(created_post)
+        db.commit() # save changes
+        db.refresh(created_post)
+
         return {        
                 "data": created_post, #* include the created post
                 "msg": "Post Created Successfully "
-            }
+        }
     except Exception as err:
         print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
         print(f"[red bold]|____Error:[/red bold]{err}")
