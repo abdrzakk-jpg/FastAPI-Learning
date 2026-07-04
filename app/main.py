@@ -69,41 +69,6 @@ async def scalar_docs():
 def root():
     return {"msg":"hello api !!!"} 
 
-database = [
-    {
-        "ID": 1,
-        "title": "Getting Started with Python",
-        "content": "Python is an easy-to-learn programming language suitable for beginners."
-    },
-    {
-        "ID": 2,
-        "title": "Introduction to FastAPI",
-        "content": "FastAPI allows you to build high-performance APIs with minimal code."
-    },
-    {
-        "ID": 3,
-        "title": "Working with Git",
-        "content": "Git helps you track changes in your code and collaborate with others."
-    },
-    {
-        "ID": 4,
-        "title": "Learning SQL",
-        "content": "SQL is used to manage and query relational databases efficiently."
-    },
-    {
-        "ID": 5,
-        "title": "REST API Basics",
-        "content": "REST APIs use HTTP methods such as GET, POST, PUT, and DELETE."
-    }
-]
-#* func to get post by ID
-def find_post(id: int):
-    for p in database:
-        if p["ID"] == id:
-            return p
-    
-    return None #* if "ID" not found
-    
 
 @app.get("/posts")
 def get_posts():

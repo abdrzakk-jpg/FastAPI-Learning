@@ -10,3 +10,4 @@ dependencies = [
     "scalar-fastapi>=1.8.2",
     "sqlalchemy>=2.0.51",
 ]
+ 
