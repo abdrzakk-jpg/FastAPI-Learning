@@ -148,7 +148,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 def delete_post(post_id: int, db: Session = Depends(get_db)):
     try: 
 
-        # get the posts
+        # get the post
         post = db.query(models.Post).filter(models.Post.id == post_id)
 
         # catch the first one
@@ -175,20 +175,35 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
 
 
 #* add update  post route using "PUT"
-@app.put("/posts/{id}")
-def update_post(id: int, post :Post):   
+@app.put("/posts/{post_id}")
+def update_post(post_id: int, post :Post, db: Session = Depends(get_db)):   
+    try: 
 
-    cursor.execute(f"UPDATE posts SET title=%s, content=%s, published=%s WHERE id=%s RETURNING *;", (post.title,post.content, post.published, str(id)))
+        # get the post
+        post_query = db.query(models.Post).filter(models.Post.id == post_id)
+        updated_post = post_query.first()
+        print(f"[blue bold]{updated_post}[/blue bold]")
+        # catch the first one
+        if updated_post is None:
+            raise HTTPException( 
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Not Found"
+            )
 
-    updated_post = cursor.fetchone()
+        post_query.update(post.model_dump(), synchronize_session=False)
 
-    if updated_post is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Post not found"
+        db.commit() # save changes
+        db.refresh(updated_post)
+        return {"detail": updated_post}
+
+    # * tell `try:` to avoid HTTPException's
+    except HTTPException:
+        raise 
+
+    except Exception as err:
+        print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
+        print(f"[red bold]|____Error:[/red bold]{err}")
+        raise HTTPException( 
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={ err }
         )
-
-    conn.commit()
-    
-
-    return {"data": updated_post}
