@@ -67,34 +67,36 @@ def root():
     return {"msg":"hello api !!!"} 
 
 
-@app.get("/posts")
+@app.get("/posts", status_code=status.HTTP_200_OK)
 def get_posts(db: Session = Depends(get_db)):
+
     # cursor.execute("SELECT * FROM posts")
     # posts = cursor.fetchall() #* .fetchall() => get all posts
 
     posts = db.query(models.Post).all()
+    
     return posts
 
 
-    
-@app.post("/posts", status_code=status.HTTP_201_CREATED)
+#? response_model=schemas.PostResponse => set response structure
+@app.post("/posts", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse)
 #! I used `models.Post` instead `Post` and thats is WRONG!!!
-
 def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
     try:
         
-        #! USE-LESS WAY: Passing each value to its var like below.... is a use-less in large model cases (like 10,20,30 column !)
+        #! USE-LESS WAY: Passing each value to its var like below.... is a useless in large model cases (like 10,20,30 column !)
         USE_LESS_created_post = models.Post(title = post.title, content = post.content, published = post.published)
 
-        #* USE-FUL  WAY: to avoid last problem, we can use `**` before `post.dict()` to create a dict and distribute the values
+        #* USE-FUL WAY : to avoid last problem, we can use `**` before `post.dict()` to create a dict and distribute the values
         created_post = models.Post(**post.dict())
+        
         
         # true insertion to database
         db.add(created_post)
         db.commit() # save changes
         db.refresh(created_post)
 
-        return created_post, #* include the created post
+        return created_post
     
     except Exception as err:
         print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
@@ -104,11 +106,10 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
             detail={ "Post Not Fount" }
         )
 #* get post by ID
-@app.get("/posts/{post_id}")
+# #? response_model=schemas.PostResponse => set response structure
+@app.get("/posts/{post_id}", response_model=schemas.PostResponse)
 def get_post(post_id: int, db: Session = Depends(get_db)):
     try: 
-
-
         post_detail = db.query(models.Post).filter(models.Post.id == post_id).first()
 
         if post_detail is None:
@@ -165,7 +166,8 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
 
 
 #* add update  post route using "PUT"
-@app.put("/posts/{post_id}")
+#? response_model=schemas.PostResponse => set response structure
+@app.put("/posts/{post_id}", response_model=schemas.PostResponse)
 def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(get_db)):   
     try: 
 
@@ -182,7 +184,7 @@ def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(ge
                 detail="Not Found"
             )
 
-        post_query.update(post.model_dump(), synchronize_session=False) # ignore
+        post_query.update(post.model_dump(), synchronize_session=False) # ignore 
 
         db.commit() # save changes
         db.refresh(updated_post)
