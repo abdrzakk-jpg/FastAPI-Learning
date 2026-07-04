@@ -1,6 +1,9 @@
 
 from datetime import datetime
-from pydantic import BaseModel #* we need `BaseModel` for setting schemas
+from pydantic import (
+    BaseModel, #* we need `BaseModel` for setting schemas
+    EmailStr   #* for true email structure
+    ) 
 
 
 #! We Need this Schema to set the `post` Structure
@@ -21,3 +24,11 @@ class PostResponse(PostBase): #* inherite [title, content, published] from `Post
     #* & Tells Pydantic to read data even if it is not a dict (give ability to return SQLAlchemy-Models in Responses)
     class Config:
         orm_mode = True
+
+
+
+class UserRegister(BaseModel):
+    email: EmailStr
+    password: str
+
+

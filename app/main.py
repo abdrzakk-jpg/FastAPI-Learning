@@ -205,3 +205,28 @@ def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(ge
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail={ err }
         )
+
+
+
+
+
+@app.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse)
+#! I used `models.Post` instead `Post` and thats is WRONG!!!
+def user_register(user: schemas.UserRegister, db: Session = Depends(get_db)):
+    try:
+        #* un-pack the dict in 
+        new_user = models.User(**user.dict())
+        # true insertion to database
+        db.add(new_user)
+        db.commit() # save changes
+        db.refresh(new_user)
+
+        return new_user
+    
+    except Exception as err:
+        print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
+        print(f"[red bold]|____Error:[/red bold]{err}")
+        raise HTTPException( 
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={ "User Not Fount" }
+        )
