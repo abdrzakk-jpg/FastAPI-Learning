@@ -113,23 +113,22 @@ def create_post(post: Post, db: Session = Depends(get_db)):
         )
 #* get post by ID
 @app.get("/posts/{post_id}")
-def get_post(post_id: int):
+def get_post(post_id: int, db: Session = Depends(get_db)):
     try: 
-        cursor.execute(
-            "SELECT * FROM posts WHERE id=%s",
-            (str(post_id),)
-        )
 
-        post_detail = cursor.fetchone()
-        if post_detail:
-            return {
-                "data": post_detail
-            }
-        else:
+
+        post_detail = db.query(models.Post).filter(models.Post.id == post_id).first()
+
+        if post_detail is None:
             raise HTTPException( 
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Not Found"
             )
+
+        return {
+            "detail": post_detail
+        }
+        
     # * to fully `raise HTTPException` with status-code & detail
     except HTTPException:
         raise 
