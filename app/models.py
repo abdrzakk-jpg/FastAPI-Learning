@@ -1,9 +1,11 @@
 from .database import Base
 from sqlalchemy import (
+    TIMESTAMP,
     Integer,
     String,
     Boolean,
-    Column, 
+    Column,
+    text, 
 )
 
 # post structure in data-base
@@ -16,3 +18,4 @@ class Post(Base):
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
     published = Column(Boolean, default=True, nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True), server_default=text('NOW()'), nullable=False)
