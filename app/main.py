@@ -129,7 +129,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
             "detail": post_detail
         }
         
-    # * to fully `raise HTTPException` with status-code & detail
+    # * tell `try:` to avoid HTTPException's
     except HTTPException:
         raise 
 
@@ -145,15 +145,25 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 
 #* delete post route 
 @app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(post_id: int):
+def delete_post(post_id: int, db: Session = Depends(get_db)):
     try: 
 
-        cursor.execute(
-            "DELETE FROM posts WHERE id=%s",
-            (str(post_id),)
-        )
+        # get the posts
+        post = db.query(models.Post).filter(models.Post.id == post_id)
 
-        conn.commit()
+        # catch the first one
+        if post.first() is None:
+            raise HTTPException( 
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Not Found"
+            )
+
+        post.delete(synchronize_session=False)
+        db.commit() # save changes
+
+    # * tell `try:` to avoid HTTPException's
+    except HTTPException:
+        raise 
 
     except Exception as err:
         print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
@@ -179,5 +189,6 @@ def update_post(id: int, post :Post):
         )
 
     conn.commit()
+    
 
     return {"data": updated_post}
