@@ -210,8 +210,7 @@ def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(ge
 
 
 
-@app.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse)
-#! I used `models.Post` instead `Post` and thats is WRONG!!!
+@app.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse)
 def user_register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     try:
         #* un-pack the dict in 
