@@ -107,7 +107,7 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
         print(f"[red bold]|____Error:[/red bold]{err}")
         raise HTTPException( 
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={ "Post Not Fount" }
+            detail=err
         )
 #* get post by ID
 # #? response_model=schemas.PostResponse => set response structure
@@ -133,7 +133,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
         print(f"[red bold]|____Error:[/red bold]{err}")
         raise HTTPException( 
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={ err }
+            detail=err
         )
 
 
@@ -165,7 +165,7 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
         print(f"[red bold]|____Error:[/red bold]{err}")
         raise HTTPException( 
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={ err }
+            detail=err
         )
 
 
@@ -203,7 +203,7 @@ def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(ge
         print(f"[red bold]|____Error:[/red bold]{err}")
         raise HTTPException( 
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={ err }
+            detail=err
         )
 
 
@@ -228,5 +228,5 @@ def user_register(user: schemas.UserRegister, db: Session = Depends(get_db)):
         print(f"[red bold]|____Error:[/red bold]{err}")
         raise HTTPException( 
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={ "User Not Fount" }
+            detail=err
         )
