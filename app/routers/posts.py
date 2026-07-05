@@ -1,6 +1,7 @@
-from typing import List
-from fastapi import  status, HTTPException , Depends
+from fastapi import  status, HTTPException , Depends, APIRouter
 
+
+from typing import List
 import psycopg as psy # add 'postgreSQL' DBMS for python
 from psycopg.rows import dict_row  # dict_row => converts result to python-dict
 
@@ -11,17 +12,16 @@ from sqlalchemy.orm import Session # UI enhancement
 
 from .. import models, schemas
 from ..utils import get_db
-from ..main import app
 
 
-
+router = APIRouter()
 
 
 #* to retrun a Group Of Posts in Response => we cover `schemas.PostResponse` within List[...] in `response_model`
 #* Why?: The Pydantic Trying To Put Many Objects in PostRespnse and fails !
 #* so we make a `List` of `PostResponse-Scheme` To give `Pydantic` ability to create many `PostResponse` Objects
 
-@app.get("/posts", status_code=status.HTTP_200_OK, response_model=List[schemas.PostResponse])
+@router.get("/posts", status_code=status.HTTP_200_OK, response_model=List[schemas.PostResponse])
 def get_posts(db: Session = Depends(get_db)):
 
     # cursor.execute("SELECT * FROM posts")
@@ -33,7 +33,7 @@ def get_posts(db: Session = Depends(get_db)):
 
 
 #? response_model=schemas.PostResponse => set response structure
-@app.post("/posts", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse)
+@router.post("/posts", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse)
 #! I used `models.Post` instead `Post` and thats is WRONG!!!
 def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
     try:
@@ -61,7 +61,7 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
         )
 #* get post by ID
 # #? response_model=schemas.PostResponse => set response structure
-@app.get("/posts/{post_id}", response_model=schemas.PostResponse)
+@router.get("/posts/{post_id}", response_model=schemas.PostResponse)
 def get_post(post_id: int, db: Session = Depends(get_db)):
     try: 
         post_detail = db.query(models.Post).filter(models.Post.id == post_id).first()
@@ -89,7 +89,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 
 
 #* delete post route 
-@app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(post_id: int, db: Session = Depends(get_db)):
     try: 
 
@@ -121,7 +121,7 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
 
 #* add update  post route using "PUT"
 #? response_model=schemas.PostResponse => set response structure
-@app.put("/posts/{post_id}", response_model=schemas.PostResponse)
+@router.put("/posts/{post_id}", response_model=schemas.PostResponse)
 def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(get_db)):   
     try: 
 

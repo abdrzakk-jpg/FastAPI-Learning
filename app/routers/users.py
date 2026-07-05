@@ -1,5 +1,5 @@
 
-from fastapi import status, HTTPException , Depends
+from fastapi import status, HTTPException, Depends, APIRouter
 
 import psycopg as psy # add 'postgreSQL' DBMS for python
 from psycopg.rows import dict_row  # dict_row => converts result to python-dict
@@ -9,16 +9,17 @@ from sqlalchemy.orm import Session # UI enhancement
 
 from .. import models, schemas
 from ..utils import hash_pwd, get_db
-from ..main import app
 
 
 
 
 
+router = APIRouter()
 
 
 
-@app.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse)
+
+@router.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse)
 def user_register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     try:
         #* hash user password
@@ -44,7 +45,7 @@ def user_register(user: schemas.UserRegister, db: Session = Depends(get_db)):
 
 #* get user by ID
 # #? response_model=schemas.UserResponse => set response structure
-@app.get("/users/{user_id}", response_model=schemas.UserResponse)
+@router.get("/users/{user_id}", response_model=schemas.UserResponse)
 def get_user(user_id: int, db: Session = Depends(get_db)):
     try: 
         user_query = db.query(models.User).filter(models.User.id == user_id)
