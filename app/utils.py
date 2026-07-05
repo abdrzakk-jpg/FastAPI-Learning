@@ -1,6 +1,6 @@
 
 from passlib.context import CryptContext # import to set hashing method
-
+from .database import SessionLocal
 pwd_context = CryptContext(
     schemes=["argon2"], #* `argon2` better than `bcrypt`
     deprecated = "auto"
@@ -9,3 +9,13 @@ pwd_context = CryptContext(
 
 def hash_pwd(pwd: str) -> str:
     return pwd_context.hash(pwd)
+
+
+
+
+#* define get_db dependency
+def get_db():
+    db = SessionLocal()
+    try: yield db
+    finally: db.close()
+
