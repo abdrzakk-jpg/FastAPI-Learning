@@ -13,13 +13,15 @@ from ..utils import hash_pwd, get_db
 
 
 
+#* we can use `prefix` parameter to pass a `Unified` path structure
+router = APIRouter(
+    prefix="/users" #* best-practicies way for better router managing
+)
 
-router = APIRouter()
 
 
 
-
-@router.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse)
 def user_register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     try:
         #* hash user password
@@ -44,8 +46,8 @@ def user_register(user: schemas.UserRegister, db: Session = Depends(get_db)):
 
 
 #* get user by ID
-# #? response_model=schemas.UserResponse => set response structure
-@router.get("/users/{user_id}", response_model=schemas.UserResponse)
+#? will converted to prefix=/users/{user_id}
+@router.get("/{user_id}", response_model=schemas.UserResponse)
 def get_user(user_id: int, db: Session = Depends(get_db)):
     try: 
         user_query = db.query(models.User).filter(models.User.id == user_id)
