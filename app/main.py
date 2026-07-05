@@ -1,18 +1,12 @@
-from typing import List
-from fastapi import FastAPI, status, HTTPException , Depends
 
-import psycopg as psy # add 'postgreSQL' DBMS for python
-from psycopg.rows import dict_row  # dict_row => converts result to python-dict
+from fastapi import FastAPI
 
-from rich import print
-from scalar_fastapi import get_scalar_api_reference
-from sqlalchemy.orm import Session # UI enhancement
+from scalar_fastapi import get_scalar_api_reference # UI enhancement
 
+from app.routers import posts, users
 
-from . import models, schemas
-from .database import engine, SessionLocal
-from .utils import hash_pwd
-
+from app.database import engine
+from app import models
 
 
 #* create models in `posts` table
@@ -38,3 +32,8 @@ async def scalar_docs():
 def root():
     return {"msg":"hello api !!!"} 
 
+
+
+#* add routers 
+app.include_router(posts.router)
+app.include_router(users.router)
