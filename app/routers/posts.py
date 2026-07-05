@@ -2,12 +2,9 @@ from fastapi import  status, HTTPException , Depends, APIRouter
 
 
 from typing import List
-import psycopg as psy # add 'postgreSQL' DBMS for python
-from psycopg.rows import dict_row  # dict_row => converts result to python-dict
 
 from rich import print
-from scalar_fastapi import get_scalar_api_reference
-from sqlalchemy.orm import Session # UI enhancement
+from sqlalchemy.orm import Session
 
 
 from .. import models, schemas
@@ -15,7 +12,8 @@ from ..utils import get_db
 
 #* we can use `prefix` parameter to pass a `Unified` path structure
 router = APIRouter(
-    prefix="/posts"
+    prefix="/posts",
+    tags=['Posts'] #* UI enhancement: create Posts Category
 )
 
 
