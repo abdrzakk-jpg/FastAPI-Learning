@@ -12,8 +12,15 @@ from sqlalchemy.orm import Session # UI enhancement
 from . import models, schemas
 from .database import engine, SessionLocal
 
+from passlib.context import CryptContext # import to set hashing method
 #* create models in `posts` table
 models.Base.metadata.create_all(bind=engine)
+
+pwd_context = CryptContext(
+    schemes=["argon2"], #* `argon2` better than `bcrypt`
+    deprecated = "auto"
+)
+
 
 #* define get_db dependency
 
@@ -213,6 +220,10 @@ def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(ge
 @app.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse)
 def user_register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     try:
+        #* hash user password
+        print(f"[yellow]{user.password}[/yellow]")
+        user.password = pwd_context.hash(user.password)
+
         #* un-pack the dict in 
         new_user = models.User(**user.dict())
         # true insertion to database
