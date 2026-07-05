@@ -234,3 +234,31 @@ def user_register(user: schemas.UserRegister, db: Session = Depends(get_db)):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=err
         )
+
+
+#* get user by ID
+# #? response_model=schemas.UserResponse => set response structure
+@app.get("/users/{user_id}", response_model=schemas.UserResponse)
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    try: 
+        user_query = db.query(models.User).filter(models.User.id == user_id)
+
+        if user_query.first() is None:
+            raise HTTPException( 
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Not Found"
+            )
+
+        return user_query.first()
+        
+    # * tell `try:` to avoid HTTPException's
+    except HTTPException:
+        raise 
+
+    except Exception as err:
+        print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
+        print(f"[red bold]|____Error:[/red bold]{err}")
+        raise HTTPException( 
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=err
+        )
