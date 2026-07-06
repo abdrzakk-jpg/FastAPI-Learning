@@ -10,7 +10,8 @@ pwd_context = CryptContext(
 def hash_pwd(pwd: str) -> str:
     return pwd_context.hash(pwd)
 
-
+def verify_pwd (hahedpwd: str, pwd: str) -> bool:
+    return pwd_context.verify(pwd, hahedpwd)
 
 
 #* define get_db dependency

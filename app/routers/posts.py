@@ -138,6 +138,7 @@ def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(ge
                 detail="Not Found"
             )
 
+        # pyrefly: ignore [bad-argument-type]
         post_query.update(post.model_dump(), synchronize_session=False) # ignore 
 
         db.commit() # save changes

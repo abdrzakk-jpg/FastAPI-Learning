@@ -3,7 +3,7 @@ from fastapi import FastAPI
 
 from scalar_fastapi import get_scalar_api_reference # UI enhancement
 
-from app.routers import posts, users
+from app.routers import posts, users, auth
 
 from app.database import engine
 from app import models
@@ -37,3 +37,4 @@ def root():
 #* add routers 
 app.include_router(posts.router)
 app.include_router(users.router)
+app.include_router(auth.router) # add `login` end-point
