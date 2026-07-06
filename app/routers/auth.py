@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 router = APIRouter(tags=['Authintiacation'])
 
 #* create user-login end-point
-@router.post("/login")
+@router.post("/login", response_model=schemas.LoginResponse)
 # FastAPI will notice that `Depends()` is empty ===> it will use `OAuth2PasswordRequestForm` like :<user_credentials = Depends( OAuth2PasswordRequestForm )>
 # the data will recived from `body` of Form-Data
 def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(utils.get_db)) :
@@ -23,8 +23,6 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session =
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Invaild Credentials"
             )
-
-
         
         user_password: str = user_query.first().password # pyrefly: ignore [missing-attribute]
         
@@ -41,7 +39,7 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session =
         return {
             "access_token": token,
             "token_type": "bearer"
-            }
+        }
 
 
         # * tell `try:` to avoid HTTPException's

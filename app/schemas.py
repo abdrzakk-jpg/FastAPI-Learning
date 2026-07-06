@@ -41,3 +41,10 @@ class UserResponse(BaseModel):
 
 class UserLogin(UserRegister):
     pass
+
+class LoginResponse(BaseModel):
+    access_token : str
+    token_type: str
+
+class TokenData(BaseModel):
+    id: int
