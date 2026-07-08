@@ -1,3 +1,4 @@
+from app import oauth2
 from fastapi import  status, HTTPException , Depends, APIRouter
 
 
@@ -28,16 +29,17 @@ def get_posts(db: Session = Depends(get_db)):
     # posts = cursor.fetchall() #* .fetchall() => get all posts
 
     posts = db.query(models.Post).all()
-    
+
     return posts
 
 
 #? response_model=schemas.PostResponse => set response structure
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse)
 #! I used `models.Post` instead `Post` and thats is WRONG!!!
+#* `user_id` is taken from `get_user()` that take token from `OAuth2PasswordBearer` that take it from `/login` that have `access_token`
+#* then decode the token and return id
 def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
     try:
-        
         #! USE-LESS WAY: Passing each value to its var like below.... is a useless in large model cases (like 10,20,30 column !)
         USE_LESS_created_post = models.Post(title = post.title, content = post.content, published = post.published)
 

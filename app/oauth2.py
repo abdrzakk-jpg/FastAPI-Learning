@@ -2,8 +2,9 @@
 from app.schemas import TokenData
 from fastapi import HTTPException, status, Depends
 from datetime import timedelta, datetime, timezone
+# pyrefly: ignore [untyped-import]
 from jose import jwt, JWTError
-
+from rich import print
 from fastapi.security import OAuth2PasswordBearer
 
 SECRET_KEY = "L73Kc5bk,3Gj)$|)!/)z{i)aQ:7-ye[(!)LQy9yFfv|"
@@ -33,17 +34,17 @@ def verify_token(token, credentials_exception):
         if user_id is None: raise credentials_exception
 
         token_data = TokenData(id=user_id)
-        
-        return token_data
     
     except JWTError :
         raise credentials_exception
 
+    return token_data
 
 
-token_scheme = OAuth2PasswordBearer(tokenUrl="login") # `OAuth2PasswordBearer` take `token` from headers !
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login") # `OAuth2PasswordBearer` take `token` from headers !
+
 # just to set `credentials_exception`
-def get_user(token: str = Depends(token_scheme)):
+def get_user(token: str = Depends(oauth2_scheme)): #the token is taken automaticly from `OAuth2PasswordBearer`
     credentials_exception = HTTPException(
         status_code = status.HTTP_401_UNAUTHORIZED,
         detail = "Could Not Validate Credentials",
