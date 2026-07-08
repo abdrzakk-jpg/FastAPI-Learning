@@ -150,7 +150,7 @@ def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(ge
     # * tell `try:` to avoid HTTPException's
     except HTTPException:
         raise 
-
+    #* just to commit to git
     except Exception as err:
         print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
         print(f"[red bold]|____Error:[/red bold]{err}")
