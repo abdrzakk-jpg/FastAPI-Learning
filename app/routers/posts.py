@@ -38,7 +38,7 @@ def get_posts(db: Session = Depends(get_db)):
 #! I used `models.Post` instead `Post` and thats is WRONG!!!
 #* `user_id` is taken from `get_user()` that take token from `OAuth2PasswordBearer` that take it from `/login` that have `access_token`
 #* then decode the token and return id
-def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
+def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_user)):
     try:
         #! USE-LESS WAY: Passing each value to its var like below.... is a useless in large model cases (like 10,20,30 column !)
         USE_LESS_created_post = models.Post(title = post.title, content = post.content, published = post.published)

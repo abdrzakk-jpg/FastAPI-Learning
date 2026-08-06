@@ -24,7 +24,7 @@ def create_token(payload: dict):
 
 
 #* we used `credentials_exception` to avoid `HTTPException` Err Repetation in the Code 
-def verify_token(token, credentials_exception):
+def verify_token(token, credentials_exception) -> TokenData:
     # verify token validation
     try:
         # the `decode()` method automaticly checks the token expiration

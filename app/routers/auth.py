@@ -32,8 +32,8 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session =
                 detail="Invaild Credentials"
             )
         
-        
-        payload: dict = {"sub": int(user_query.first().id)} # pyrefly: ignore [missing-attribute]
+        ## The Subject (sub/user_id) must be a String!
+        payload: dict = {"sub": str(user_query.first().id)} # pyrefly: ignore [missing-attribute]
         token: str = create_token(payload)
 
         return {
