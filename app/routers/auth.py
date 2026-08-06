@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 router = APIRouter(tags=['Authintiacation'])
 
 #* create user-login end-point
-@router.post("/login", response_model=schemas.LoginResponse)
+@router.post("/login", response_model=schemas.Token)
 # FastAPI will notice that `Depends()` is empty ===> it will use `OAuth2PasswordRequestForm` like :<user_credentials = Depends( OAuth2PasswordRequestForm )>
 # the data will recived from `body` of Form-Data
 def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(utils.get_db)) :

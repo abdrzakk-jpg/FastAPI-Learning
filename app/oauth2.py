@@ -1,5 +1,5 @@
 
-from app.schemas import TokenData
+from app.schemas import TokenData, Token
 from fastapi import HTTPException, status, Depends
 from datetime import timedelta, datetime, timezone
 # pyrefly: ignore [untyped-import]
@@ -11,7 +11,7 @@ SECRET_KEY = "L73Kc5bk,3Gj)$|)!/)z{i)aQ:7-ye[(!)LQy9yFfv|"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRATION_MINUETS = 30
 
-def create_token(payload: dict):
+def create_token(payload: dict) -> str:
     # token createion
     to_encode = payload.copy()
 
@@ -33,7 +33,7 @@ def verify_token(token, credentials_exception) -> TokenData:
 
         if user_id is None: raise credentials_exception
 
-        token_data = TokenData(id=user_id)
+        token_data = TokenData(sub=user_id)
     
     except JWTError :
         raise credentials_exception
