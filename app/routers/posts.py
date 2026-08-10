@@ -1,26 +1,17 @@
 from app import oauth2
 from fastapi import  status, HTTPException , Depends, APIRouter
-
-
 from typing import List
-
 from rich import print
 from sqlalchemy.orm import Session
-
-
 from .. import models, schemas
 from ..utils import get_db
 
-#* we can use `prefix` parameter to pass a `Unified` path structure
+
 router = APIRouter(
     prefix="/posts",
     tags=['Posts'] #* UI enhancement: create Posts Category
 )
 
-
-#* to retrun a Group Of Posts in Response => we cover `schemas.PostResponse` within List[...] in `response_model`
-#* Why?: The Pydantic Trying To Put Many Objects in PostRespnse and fails !
-#* so we make a `List` of `PostResponse-Scheme` To give `Pydantic` ability to create many `PostResponse` Objects
 
 @router.get("/", status_code=status.HTTP_200_OK, response_model=List[schemas.PostResponse])
 def get_posts(db: Session = Depends(get_db)):
@@ -35,13 +26,8 @@ def get_posts(db: Session = Depends(get_db)):
 
 #? response_model=schemas.PostResponse => set response structure
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse)
-#! I used `models.Post` instead `Post` and thats is WRONG!!!
-#* `user_id` is taken from `get_user()` that take token from `OAuth2PasswordBearer` that take it from `/login` that have `access_token`
-#* then decode the token and return id
-def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_user)):
+def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), user_id: schemas.TokenData = Depends(oauth2.get_user)):
     try:
-        #! USE-LESS WAY: Passing each value to its var like below.... is a useless in large model cases (like 10,20,30 column !)
-        USE_LESS_created_post = models.Post(title = post.title, content = post.content, published = post.published)
 
         #* USE-FUL WAY : to avoid last problem, we can use `**` before `post.dict()` to create a dict and distribute the values
         created_post = models.Post(**post.dict())
@@ -121,8 +107,7 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
         )
 
 
-#* add update  post route using "PUT"
-#? response_model=schemas.PostResponse => set response structure
+#* add update post route using "PUT"
 @router.put("/{post_id}", response_model=schemas.PostResponse)
 def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(get_db)):   
     try: 
