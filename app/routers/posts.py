@@ -112,7 +112,6 @@ def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(ge
 
         updated_post = post_query.first()
 
-        print(f"[blue bold]{updated_post}[/blue bold]")
         # catch the first one
         if updated_post is None:
             raise HTTPException( 
