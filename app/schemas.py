@@ -23,9 +23,16 @@ class PostResponse(PostBase): #* inherite [title, content, published] from `Post
     #* the following line: make Pydantic to handle with SQLAlchemy-Models 
     #* & Tells Pydantic to read data even if it is not a dict (give ability to return SQLAlchemy-Models in Responses)
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
+
+class User(BaseModel):
+    id: int
+    email: EmailStr
+    joined_at: datetime
+    class Config:
+        from_attributes = True
 
 class UserRegister(BaseModel):
     email: EmailStr
@@ -37,7 +44,7 @@ class UserResponse(BaseModel):
     joined_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UserLogin(UserRegister):
     pass

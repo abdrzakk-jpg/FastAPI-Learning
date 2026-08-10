@@ -1,4 +1,7 @@
 
+from app.models import User
+from app.utils import get_db
+from sqlalchemy.orm.session import Session
 from app.schemas import TokenData, Token
 from fastapi import HTTPException, status, Depends
 from datetime import timedelta, datetime, timezone
@@ -44,11 +47,14 @@ def verify_token(token, credentials_exception) -> TokenData:
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login") # `OAuth2PasswordBearer` take `token` from headers !
 
 # just to set `credentials_exception`
-def get_user(token: str = Depends(oauth2_scheme)): #the token is taken automaticly from `OAuth2PasswordBearer`
+def get_user(token: Token = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User: #the token is taken automaticly from `OAuth2PasswordBearer`
     credentials_exception = HTTPException(
         status_code = status.HTTP_401_UNAUTHORIZED,
         detail = "Could Not Validate Credentials",
         headers={"WWW-Authenticate": "Bearer"}
     )
+    # get user by id
+    user_id: TokenData = verify_token(token, credentials_exception)
+    user = db.query(User).filter(User.id == user_id.sub).first()
 
-    return verify_token(token, credentials_exception)
+    return user

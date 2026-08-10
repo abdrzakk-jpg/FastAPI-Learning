@@ -15,21 +15,16 @@ router = APIRouter(
 
 @router.get("/", status_code=status.HTTP_200_OK, response_model=List[schemas.PostResponse])
 def get_posts(db: Session = Depends(get_db)):
-
-    # cursor.execute("SELECT * FROM posts")
-    # posts = cursor.fetchall() #* .fetchall() => get all posts
-
     posts = db.query(models.Post).all()
-
     return posts
 
 
 #? response_model=schemas.PostResponse => set response structure
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse)
-def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), user_id: schemas.TokenData = Depends(oauth2.get_user)):
+def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), author: schemas.User  = Depends(oauth2.get_user)):
     try:
 
-        #* USE-FUL WAY : to avoid last problem, we can use `**` before `post.dict()` to create a dict and distribute the values
+
         created_post = models.Post(**post.dict())
         
 
@@ -50,7 +45,7 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), user_id
 #* get post by ID
 # #? response_model=schemas.PostResponse => set response structure
 @router.get("/{post_id}", response_model=schemas.PostResponse)
-def get_post(post_id: int, db: Session = Depends(get_db)):
+def get_post(post_id: int, db: Session = Depends(get_db), ):
     try: 
         post_detail = db.query(models.Post).filter(models.Post.id == post_id).first()
 
@@ -78,7 +73,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 
 #* delete post route 
 @router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(post_id: int, db: Session = Depends(get_db)):
+def delete_post(post_id: int, db: Session = Depends(get_db), author: schemas.User  = Depends(oauth2.get_user)):
     try: 
 
         # get the post
@@ -109,7 +104,7 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
 
 #* add update post route using "PUT"
 @router.put("/{post_id}", response_model=schemas.PostResponse)
-def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(get_db)):   
+def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(get_db), author: schemas.User  = Depends(oauth2.get_user)):   
     try: 
 
         # get the post
