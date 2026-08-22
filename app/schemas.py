@@ -19,6 +19,7 @@ class PostUpdate(PostBase): pass
 class PostResponse(PostBase): #* inherite [title, content, published] from `PostBase` 
     id: int
     created_at: datetime 
+    author_id: int
 
     #* the following line: make Pydantic to handle with SQLAlchemy-Models 
     #* & Tells Pydantic to read data even if it is not a dict (give ability to return SQLAlchemy-Models in Responses)

@@ -95,8 +95,8 @@
 ### Section 9: Relationships
 80. SQL Relationship Basics 7:50:33 ✅
 81. Postgres Foreign Keys 7:54:59 ✅
-82. SQLAlchemy Foreign Keys 8:07:20
-83. Update Post Schema to include User 8:13:40
+82. SQLAlchemy Foreign Keys 8:07:20 ✅
+83. Update Post Schema to include User 8:13:40 ✅
 84. Assigning Owner id when creating new post 8:17:59
 85. Delete and Update only your own posts 8:21:01
 86. Only Retrieving Logged in User's posts 8:27:48
