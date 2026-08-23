@@ -15,8 +15,10 @@ router = APIRouter(
 
 # get all posts for logged-in user 
 @router.get("/", status_code=status.HTTP_200_OK, response_model=List[schemas.PostResponse])
-def get_posts(db: Session = Depends(get_db), author: schemas.User = Depends(get_user)):
-    posts = db.query(models.Post).filter(models.Post.author_id == author.id).all()
+def get_posts(db: Session = Depends(get_db), author: schemas.User = Depends(get_user), limit: int = 5):
+
+    posts = db.query(models.Post).filter(models.Post.author_id == author.id).limit(limit).all()
+    
     return posts
 
 

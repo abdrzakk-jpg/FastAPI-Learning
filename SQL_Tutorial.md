@@ -114,7 +114,7 @@
 ```postgres
         <!--! ASC = From `low` to `high` values -->
         SELECT { column_name } FROM { table_name } ORDER BY { column_name } ASC;
-        <!--! DESC = From `high` to `to` values (reverse of ASC)-->
+        <!--! DESC = From `high` to `low` values (reverse of ASC)-->
         SELECT { column_name } FROM { table_name } ORDER BY { column_name } DESC;
 ```
 - **Example:** 
