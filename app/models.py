@@ -1,4 +1,5 @@
 
+from sqlalchemy.orm import relationship
 from .database import Base
 from sqlalchemy import (
     ForeignKey,
@@ -23,7 +24,10 @@ class Post(Base):
     created_at = Column(TIMESTAMP(timezone=True), server_default=text('NOW()'), nullable=False)
     author_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     #                                      tablename.column
+    author_info = relationship("User") ## SQLAlchemy gets the User-Data (id, email, joined_at) automaticaly !
+    ## we must put the Model Name instead __tablename__
 
+# user structure in data-base
 class User(Base):
     # define table name:
     __tablename__ = "users"
