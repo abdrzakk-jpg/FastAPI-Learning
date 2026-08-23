@@ -101,7 +101,7 @@
 85. Delete and Update only your own posts 8:21:01 ✅
 86. Only Retrieving Logged in User's posts 8:27:48 ✅
 87. Sqlalchemy Relationships 8:33:37 ✅
-88. Query Parameters 8:38:32
+88. Query Parameters 8:38:32 ✅
 89. Cleanup our main.py file 8:50:46
 90. Environment Variables 8:53:53
 
