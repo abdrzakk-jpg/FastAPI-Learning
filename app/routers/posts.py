@@ -1,3 +1,4 @@
+from app.oauth2 import get_user
 from app import oauth2
 from fastapi import  status, HTTPException , Depends, APIRouter
 from typing import List
@@ -12,10 +13,10 @@ router = APIRouter(
     tags=['Posts'] #* UI enhancement: create Posts Category
 )
 
-
+# get all posts for logged-in user 
 @router.get("/", status_code=status.HTTP_200_OK, response_model=List[schemas.PostResponse])
-def get_posts(db: Session = Depends(get_db)):
-    posts = db.query(models.Post).all()
+def get_posts(db: Session = Depends(get_db), author: schemas.User = Depends(get_user)):
+    posts = db.query(models.Post).filter(models.Post.author_id == author.id).all()
     return posts
 
 
@@ -24,9 +25,7 @@ def get_posts(db: Session = Depends(get_db)):
 def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), author: schemas.User  = Depends(oauth2.get_user)):
     try:
 
-
-        created_post = models.Post(**post.dict())
-        
+        created_post = models.Post(**post.dict(), author_id = author.id)
 
         # true insertion to database
         db.add(created_post)
@@ -77,13 +76,19 @@ def delete_post(post_id: int, db: Session = Depends(get_db), author: schemas.Use
     try: 
 
         # get the post
-        post = db.query(models.Post).filter(models.Post.id == post_id)
+        post: models.Post = db.query(models.Post).filter(models.Post.id == post_id)
 
         # catch the first one
         if post.first() is None:
             raise HTTPException( 
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Not Found"
+            )            
+        # this is `More logical`
+        if post.first().author_id != author.id:
+            raise HTTPException( 
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not Allowed"
             )
 
         post.delete(synchronize_session=False)
@@ -119,9 +124,14 @@ def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(ge
                 detail="Not Found"
             )
 
+        if updated_post.author_id != author.id:
+            raise HTTPException( 
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not Allowed"
+            )
+
         # pyrefly: ignore [bad-argument-type]
         post_query.update(post.model_dump(), synchronize_session=False) # ignore 
-
         db.commit() # save changes
         db.refresh(updated_post)
         return updated_post

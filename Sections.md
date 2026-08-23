@@ -97,9 +97,9 @@
 81. Postgres Foreign Keys 7:54:59 ✅
 82. SQLAlchemy Foreign Keys 8:07:20 ✅
 83. Update Post Schema to include User 8:13:40 ✅
-84. Assigning Owner id when creating new post 8:17:59
-85. Delete and Update only your own posts 8:21:01
-86. Only Retrieving Logged in User's posts 8:27:48
+84. Assigning Owner id when creating new post 8:17:59 ✅
+85. Delete and Update only your own posts 8:21:01 ✅
+86. Only Retrieving Logged in User's posts 8:27:48 ✅
 87. Sqlalchemy Relationships 8:33:37
 88. Query Parameters 8:38:32
 89. Cleanup our main.py file 8:50:46
