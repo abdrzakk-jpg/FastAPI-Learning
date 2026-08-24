@@ -9,20 +9,19 @@ from datetime import timedelta, datetime, timezone
 from jose import jwt, JWTError
 from rich import print
 from fastapi.security import OAuth2PasswordBearer
+from app.config import settings as env
 
-SECRET_KEY = "L73Kc5bk,3Gj)$|)!/)z{i)aQ:7-ye[(!)LQy9yFfv|"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRATION_MINUETS = 30
+
 
 def create_token(payload: dict) -> str:
     # token createion
     to_encode = payload.copy()
 
     # count 30-minutes from now
-    exp = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRATION_MINUETS)  
+    exp = datetime.now(timezone.utc) + timedelta(minutes=env.ACCESS_TOKEN_EXPIRATION_MINUETS)  
     
     to_encode.update({"exp": exp})
-    token = jwt.encode(to_encode, SECRET_KEY, ALGORITHM)
+    token = jwt.encode(to_encode, env.SECRET_KEY, env.ALGORITHM)
     return token
 
 
@@ -31,7 +30,7 @@ def verify_token(token, credentials_exception) -> TokenData:
     # verify token validation
     try:
         # the `decode()` method automaticly checks the token expiration
-        payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
+        payload = jwt.decode(token, env.SECRET_KEY, env.ALGORITHM)
         user_id = payload.get("sub")
 
         if user_id is None: raise credentials_exception

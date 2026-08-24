@@ -92,7 +92,7 @@
 77. Test Expired Token 7:36:17 ✅
 78. Fetching User in Protected Routes 7:38:13 ✅
 79. Postman advanced Features 7:42:44 ✅
-### Section 9: Relationships
+### Section 9: Relationships 
 80. SQL Relationship Basics 7:50:33 ✅
 81. Postgres Foreign Keys 7:54:59 ✅
 82. SQLAlchemy Foreign Keys 8:07:20 ✅
@@ -103,7 +103,7 @@
 87. Sqlalchemy Relationships 8:33:37 ✅
 88. Query Parameters 8:38:32 ✅
 89. Cleanup our main.py file 8:50:46 ✅
-90. Environment Variables 8:53:53
+90. Environment Variables 8:53:53 ✅
 
 ### Section 10: Vote/Like System
 91. Vote/Like Theory 9:21:20

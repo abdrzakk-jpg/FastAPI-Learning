@@ -1,9 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import  declarative_base
+from app.config import settings as env
 
 # pattern for clear URL: "postgresql://<username>:<password>@<ip-address>/<database-name>"
-SQLALCHMY_DATABASE_URL = "postgresql://postgres:123@localhost/postgres"
+SQLALCHMY_DATABASE_URL = f"postgresql://{env.DB_USERNAME}:{env.DB_PASSWORD}@{env.DB_HOSTNAME}:{env.DB_PORT}/{env.DB_NAME}"
 
 #* create `sqlalchemy` engine
 engine = create_engine(SQLALCHMY_DATABASE_URL)
