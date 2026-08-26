@@ -1,4 +1,5 @@
 
+from ast import List
 from datetime import datetime
 from pydantic import (
     BaseModel, #* we need `BaseModel` for setting schemas
@@ -60,3 +61,8 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     sub: str
+
+
+class Vote(BaseModel):
+    post_id: int
+    vote_dir: int
