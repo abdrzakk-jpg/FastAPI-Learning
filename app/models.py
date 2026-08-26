@@ -25,7 +25,7 @@ class Post(Base):
     author_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     #                                      tablename.column
     author_info = relationship("User") ## SQLAlchemy gets the User-Data (id, email, joined_at) automaticaly !
-    ## we must put the Model Name instead __tablename__
+    ## we must put the Model Name instead __tablename__ in place of <"User">
 
 # user structure in data-base
 class User(Base):
@@ -37,3 +37,12 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
     joined_at = Column(TIMESTAMP(timezone=True), server_default=text('NOW()'), nullable=False)
+
+# Vote structure in data-base
+class Vote(Base):
+    # define table name:
+    __tablename__ = "votes"
+
+    # define columns (post_id PK, user_id PK)
+    post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"), primary_key=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True, nullable=False)

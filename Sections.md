@@ -106,9 +106,9 @@
 90. Environment Variables 8:53:53 ✅
 
 ### Section 10: Vote/Like System
-91. Vote/Like Theory 9:21:20
-92. Votes Table 9:26:36
-93. Votes Sqlalchemy 9:31:33
+91. Vote/Like Theory 9:21:20 ✅
+92. Votes Table 9:26:36 ✅
+93. Votes Sqlalchemy 9:31:33 ✅
 94. Votes Route 9:34:11
 95. SQL Joins 9:52:31
 96. Joins in SqlAlchemy 10:15:26
