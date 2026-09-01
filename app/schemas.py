@@ -1,5 +1,4 @@
 
-from ast import List
 from datetime import datetime
 from pydantic import (
     BaseModel, #* we need `BaseModel` for setting schemas
@@ -18,18 +17,23 @@ class PostUpdate(PostBase): pass
 
 
 
-#* define the structure returned Post-Data in response 
-class PostResponse(PostBase): #* inherite [title, content, published] from `PostBase` 
+
+class PostDictSchema(PostBase):
     id: int
     created_at: datetime 
     author_id: int
-    author_info: UserResponse # For Testing 
 
-    #* the following line: make Pydantic to handle with SQLAlchemy-Models 
-    #* & Tells Pydantic to read data even if it is not a dict (give ability to return SQLAlchemy-Models in Responses)
+
     class Config:
         from_attributes = True
 
+
+class PostResponse(BaseModel):
+    Post: PostDictSchema
+    votes: int
+
+    class Config:
+        from_attributes = True
 
 
 class User(BaseModel):
@@ -66,3 +70,6 @@ class TokenData(BaseModel):
 class Vote(BaseModel):
     post_id: int
     vote_dir: int
+
+    class Config:
+        from_attributes = True

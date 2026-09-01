@@ -1,11 +1,10 @@
 
 
-from pydantic_settings import BaseSettings, InitSettingsSource
 
 
-class Settings(BaseSettings):
-    DB_PWD: str
+from string import ascii_letters, digits
+from random import choices
 
+gen_code = lambda: "".join(choices(ascii_letters+digits, k=4))
 
-settings = Settings()
-print(settings.DB_PWD)
+print(f"{gen_code()}")

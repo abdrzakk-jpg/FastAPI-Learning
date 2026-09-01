@@ -1,3 +1,4 @@
+from sqlalchemy import func
 from app.oauth2 import get_user
 from app import oauth2
 from fastapi import  status, HTTPException , Depends, APIRouter
@@ -7,7 +8,6 @@ from sqlalchemy.orm import Session
 from .. import models, schemas
 from ..utils import get_db
 
-
 router = APIRouter(
     prefix="/posts",
     tags=['Posts'] #* UI enhancement: create Posts Category
@@ -16,10 +16,14 @@ router = APIRouter(
 # get all posts for logged-in user 
 @router.get("/", status_code=status.HTTP_200_OK, response_model=List[schemas.PostResponse])
 def get_posts(db: Session = Depends(get_db), author: schemas.User = Depends(get_user), limit: int = 5, skip=0, search: Optional[str] = ""):
-    print(search)
-    posts = db.query(models.Post).filter(models.Post.author_id == author.id).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
     
-    return posts
+    # posts = db.query(models.Post).filter(models.Post.author_id == author.id).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
+
+    posts_query = db.query(models.Post, func.count(models.Vote.post_id).label("votes")).join(models.Vote, models.Post.id == models.Vote.post_id, isouter=True).group_by(models.Post.id,models.Vote.post_id)
+    
+    filtered_query = posts_query.filter(models.Post.author_id == author.id).filter(models.Post.title.contains(search)).limit(limit).offset(skip)
+
+    return filtered_query.all()
 
 
 #? response_model=schemas.PostResponse => set response structure

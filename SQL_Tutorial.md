@@ -230,10 +230,51 @@
 
         <!--* update & return updated -->
         UPDATE users SET name = 'Ali' WHERE id=203 RETURNING *;
-
 ```
 
 
+
+* <span style="color:#fa0f4e"><b>Join using `JOIN`: </b></span>
+### <span style="color: #fcd45d"><b>======================|JOIN|======================</b></span>
+
+- **Rule**:
+```postgres
+        <!--* Select data of 2->more merged tables that have `Common-Column` -->
+        SELECT { column_name } FROM { table_1 } JOIN { table_2 } ON { table_1.id = table_2.id }
+```
+* <span style="color: #f3f700; font-weight:bold"><b>we must notice that: </b></span>
+    * <span style="color: #f3f700; font-weight:bold"><b>{ table_1 }</b></span>: is the **`LEFT`** Table
+    * <span style="color: #f3f700; font-weight:bold"><b>{ table_2 }</b></span>: is the **`RIGHT`** Table
+
+
+- **Join Types**:
+
+```postgres
+        <!-- LEFT Join -->
+        SELECT { column_name } FROM { table_1 } LEFT JOIN { table_2 } ON { table_1.id = table_2.id } <!--=> Merge  { table_1 } with { table_2 } and replace missisings (from table_1) with `NULL`-->
+```
+---
+```postgres
+        <!-- RIGHT Join -->
+        SELECT { column_name } FROM { table_1 } RIGHT JOIN { table_2 } ON { table_1.id = table_2.id } <!--=> Merge  { table_2 } with { table_1 } and replace missisings (from table_2) with `NULL`-->
+```
+---
+```postgres
+        <!-- FULL Join -->
+        SELECT { column_name } FROM { table_1 } FULL JOIN { table_2 } ON { table_1.id = table_2.id } <!--=> Merge  { table_1 } + { table_2 } and replace missisings (from both) with `NULL`-->
+```
+---
+```postgres
+        <!-- INNER Join -->
+        SELECT { column_name } FROM { table_1 } INNER JOIN { table_2 } ON { table_1.id = table_2.id } <!--=> Merge  { table_1 } + { table_2 } `with-no`  replace for missisings (from both) -->
+```
+- **Example**:
+```postgres
+        SELECT posts.id, posts.title, users.email, posts.author_id FROM posts FULL JOIN users ON posts.author_id = users.id <!--=> return All Data-->
+```
+
+- **For More Understanding**:
+![alt](./md-assets/join-types.webp)
 * <span style="background: -webkit-linear-gradient(180deg,  #a6fe84, #4efa0f); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"><b>Good Practicies 💫: </b></span>:
     - **<span style="color: #bb0ffa">Write SQL Keywords in Upper-Case</span>**
     - **<span style="color: #bb0ffa">Always Put Strings inside 'single-quote'</span>**
