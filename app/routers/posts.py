@@ -52,15 +52,16 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), author:
 @router.get("/{post_id}", response_model=schemas.PostResponse)
 def get_post(post_id: int, db: Session = Depends(get_db), ):
     try: 
-        post_detail = db.query(models.Post).filter(models.Post.id == post_id).first()
+        posts_query = db.query(models.Post, func.count(models.Vote.post_id).label("votes")).join(models.Vote, models.Post.id == models.Vote.post_id, isouter=True).group_by(models.Post.id,models.Vote.post_id)
+        filtred_post_query = posts_query.filter(models.Post.id == post_id).first()
 
-        if post_detail is None:
+        if filtred_post_query is None:
             raise HTTPException( 
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Not Found"
             )
 
-        return post_detail
+        return filtred_post_query
         
     # * tell `try:` to avoid HTTPException's
     except HTTPException:
