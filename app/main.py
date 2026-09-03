@@ -1,4 +1,6 @@
 
+from scalar_fastapi import Theme
+from scalar_fastapi import Layout
 from app.routers import votes
 from fastapi import FastAPI
 
@@ -25,6 +27,8 @@ app = FastAPI(
 async def scalar_docs():
     return get_scalar_api_reference(
         openapi_url=app.openapi_url,
+        layout=Layout.CLASSIC,
+        theme=Theme.DEEP_SPACE,
         title="API Docs",
     )
 #* ======================================================== *#
