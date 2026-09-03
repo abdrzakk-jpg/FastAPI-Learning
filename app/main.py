@@ -13,7 +13,7 @@ from app import models
 
 
 #* create models in `posts` table
-models.Base.metadata.create_all(bind=engine)
+# models.Base.metadata.create_all(bind=engine) #* disable while using `Alembic`
 
 
 app = FastAPI(  

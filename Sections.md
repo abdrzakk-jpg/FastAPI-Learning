@@ -120,7 +120,7 @@
 100. Alembic First Revision ✅
 101. Alembic Rollback database Schema ✅
 102. Alembic finishing up the rest of the schema ✅
-103. Disable SqlAlchemy create Engine 11:13:50
+103. Disable SqlAlchemy create Engine 11:13:50 ✅
 
 ### Section 12: Pre Deployment Checklist
 104. What is CORS????? 11:14:28
