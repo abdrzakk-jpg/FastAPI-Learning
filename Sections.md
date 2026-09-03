@@ -115,7 +115,7 @@
 97. Get One Post with Joins 10:28:21 ✅
 
 ### Section 11: Database Migration w/ Alembic
-98. What is a database migration tool 10:30:18
+98. What is a database migration tool 10:30:18 ✅
 99. Alembic Setup 10:33:45
 100. Alembic First Revision 
 101. Alembic Rollback database Schema 
