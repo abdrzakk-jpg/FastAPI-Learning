@@ -37,6 +37,7 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
     joined_at = Column(TIMESTAMP(timezone=True), server_default=text('NOW()'), nullable=False)
+    phone_number = Column(String, nullable=False, unique=True)
 
 # Vote structure in data-base
 class Vote(Base):
