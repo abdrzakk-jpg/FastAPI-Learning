@@ -1,0 +1,28 @@
+
+#* We Choose `render.yaml` instead of `Procfile` bcos RENDER IS FREE ;)
+services:
+  - type: web
+    name: fastapi-course
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+
+    envVars:
+    # sync: false ===> require manual entry by user (bcoz .env will not be in github)
+      - key: ACCESS_TOKEN_EXPIRATION_MINUETS
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: ALGORITHM
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_HOSTNAME
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_NAME
+        sync: false
