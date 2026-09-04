@@ -3,14 +3,11 @@ from scalar_fastapi import Theme
 from scalar_fastapi import Layout
 from app.routers import votes
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from scalar_fastapi import get_scalar_api_reference # UI enhancement
 
 from app.routers import posts, users, auth
-
-from app.database import engine
-from app import models
-
 
 #* create models in `posts` table
 # models.Base.metadata.create_all(bind=engine) #* disable while using `Alembic`
@@ -19,6 +16,17 @@ from app import models
 app = FastAPI(  
     docs_url=None,   # تعطيل Swagger
     redoc_url=None,  # تعطيل ReDoc
+)
+origins = [
+    "https://www.google.com",
+]
+
+app.add_middleware(
+    CORSMiddleware, # is a function  (Client ----> CORSMiddleware() ----> Backend(Fastapi))
+    allow_origins=origins, # 
+    allow_credentials=True,
+    allow_methods=["*"], # GET, POST,PUT,PATCH,DELETE,OPTIONS ...
+    allow_headers=["*"], # 
 )
 
 
