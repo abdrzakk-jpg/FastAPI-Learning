@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     DB_HOSTNAME: str
     DB_PORT: str
     DB_NAME: str
+    ENVIRONMENT: str
 
     class Config: #*=> to set env vars source
         env_file = ".env"

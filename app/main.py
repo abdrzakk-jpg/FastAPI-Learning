@@ -1,16 +1,19 @@
 
 from scalar_fastapi import Theme
 from scalar_fastapi import Layout
-from app.routers import votes
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from scalar_fastapi import get_scalar_api_reference # UI enhancement
+from app.routers import posts, users, auth, votes
+from app.database import engine
+import app.models as models
+from app.config import settings
 
-from app.routers import posts, users, auth
 
-#* create models in `posts` table
-# models.Base.metadata.create_all(bind=engine) #* disable while using `Alembic`
+if settings.ENVIRONMENT == "production":
+    #* create models in `posts` table in production
+    models.Base.metadata.create_all(bind=engine) #* disable while using `Alembic`
 
 
 app = FastAPI(  
