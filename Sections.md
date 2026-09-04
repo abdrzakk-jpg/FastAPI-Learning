@@ -123,19 +123,19 @@
 103. Disable SqlAlchemy create Engine 11:13:50 ✅
 
 ### Section 12: Pre Deployment Checklist
-104. What is CORS????? 11:14:28
-105. Git PreReqs 11:23:38
-106. Git Install 11:27:40
-107. Github 11:29:23
+104. What is CORS????? 11:14:28 ✅
+105. Git PreReqs 11:23:38 ✅
+106. Git Install 11:27:40 ✅
+107. Github 11:29:23 ✅
 
-### Section 13: Deployment Heroku
-108. Heroku intro  11:34:39
-109. Create Heroku App 11:35:40
-110. Heroku procfile 11:40:21
-111. Adding a Postgres database 11:44:59
-112. Environment Variables in Heroku 11:48:42
-113. Alembic migrations on Heroku Postgres instance 11:58:59
-114. Pushing changed to production 12:02:52
+### Section 13: Deployment Heroku ❌❌`NEED-PAYMENT`❌❌ 
+108. Heroku intro  11:34:39 ❌
+109. Create Heroku App 11:35:40 ❌
+110. Heroku procfile 11:40:21 ❌
+111. Adding a Postgres database 11:44:59 ❌
+112. Environment Variables in Heroku 11:48:42 ❌
+113. Alembic migrations on Heroku Postgres instance 11:58:59 ❌
+114. Pushing changed to production 12:02:52 ❌
 
 ### Section 14: Deployment Ubuntu
 115. Create an Ubuntu VM 12:05:04
