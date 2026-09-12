@@ -4,7 +4,7 @@ from pydantic import (
     BaseModel, #* we need `BaseModel` for setting schemas
     EmailStr   #* for true email structure
     ) 
-import re 
+from pydantic_extra_types.phone_numbers import PhoneNumber
 
 #! We Need this Schema to set the `post` Structure
 class PostBase(BaseModel):
@@ -46,7 +46,7 @@ class User(BaseModel):
 class UserRegister(BaseModel):
     email: EmailStr
     password: str
-    phone_number: re.Pattern[str] = re.compile(r"^\+?[1-9]\d{6,14}$")
+    phone_number: PhoneNumber
 
 class UserResponse(BaseModel):
     id: int
