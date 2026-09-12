@@ -136,6 +136,7 @@
 112. Environment Variables in Heroku 11:48:42 ❌
 113. Alembic migrations on Heroku Postgres instance 11:58:59 ❌
 114. Pushing changed to production 12:02:52 ❌
+**i use render instead**
 
 ### Section 14: Deployment Ubuntu
 115. Create an Ubuntu VM 12:05:04
