@@ -11,6 +11,7 @@ from sqlalchemy import (
     text, 
 )
 
+
 # post structure in data-base
 class Post(Base):
     # define table name:
@@ -27,6 +28,7 @@ class Post(Base):
     author_info = relationship("User") ## SQLAlchemy gets the User-Data (id, email, joined_at) automaticaly !
     ## we must put the Model Name instead __tablename__ in place of <"User">
 
+
 # user structure in data-base
 class User(Base):
     # define table name:
@@ -38,6 +40,7 @@ class User(Base):
     password = Column(String, nullable=False)
     joined_at = Column(TIMESTAMP(timezone=True), server_default=text('NOW()'), nullable=False)
     phone_number = Column(String, nullable=False, unique=True)
+
 
 # Vote structure in data-base
 class Vote(Base):

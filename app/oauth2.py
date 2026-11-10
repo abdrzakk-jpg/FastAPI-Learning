@@ -7,7 +7,6 @@ from fastapi import HTTPException, status, Depends
 from datetime import timedelta, datetime, timezone
 # pyrefly: ignore [untyped-import]
 from jose import jwt, JWTError
-from rich import print
 from fastapi.security import OAuth2PasswordBearer
 from app.config import settings as env
 
@@ -15,6 +14,7 @@ from app.config import settings as env
 
 def create_token(payload: dict) -> str:
     # token createion
+    
     to_encode = payload.copy()
 
     # count 30-minutes from now
@@ -45,6 +45,7 @@ def verify_token(token, credentials_exception) -> TokenData:
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login") # `OAuth2PasswordBearer` take `token` from headers !
 
+
 # just to set `credentials_exception`
 def get_user(token: Token = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User: #the token is taken automaticly from `OAuth2PasswordBearer`
     credentials_exception = HTTPException(
@@ -53,7 +54,8 @@ def get_user(token: Token = Depends(oauth2_scheme), db: Session = Depends(get_db
         headers={"WWW-Authenticate": "Bearer"}
     )
     # get user by id
+    
     user_id: TokenData = verify_token(token, credentials_exception)
     user = db.query(User).filter(User.id == user_id.sub).first()
-
+    
     return user

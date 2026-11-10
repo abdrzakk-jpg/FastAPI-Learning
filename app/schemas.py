@@ -17,7 +17,6 @@ class PostUpdate(PostBase): pass
 
 
 
-
 class PostDictSchema(PostBase):
     id: int
     created_at: datetime 

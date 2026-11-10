@@ -139,16 +139,16 @@
 **i use render instead**
 
 ### Section 14: Deployment Ubuntu
-115. Create an Ubuntu VM 12:05:04
-116. Update packages 12:08:04
-117. Install Python 12:10:47
-118. Install Postgres & setup password 12:12:21
-119. Postgres Config 12:17:28
-120. Create new user and setup python environment 12:24:50
-121. Environment Variables 12:34:06
-122. Alembic migrations on production database 12:42:24
-123. Gunicorn 12:45:57
-124. Creating a Systemd service 12:54:12
+115. Create an Ubuntu VM 12:05:04 ✅
+116. Update packages 12:08:04 ✅
+117. Install Python 12:10:47 ✅
+118. Install Postgres & setup password 12:12:21 ✅
+119. Postgres Config 12:17:28 ✅
+120. Create new user and setup python environment 12:24:50 ✅
+121. Environment Variables 12:34:06 ✅
+122. Alembic migrations on production database 12:42:24 ✅
+123. Gunicorn 12:45:57 ✅
+124. Creating a Systemd service 12:54:12 ✅
 125. NGINX 13:04:45
 126. Setting up Domain name 13:10:45
 127. SSL/HTTPS 13:15:19
