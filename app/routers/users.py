@@ -22,10 +22,25 @@ router = APIRouter(
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse)
 def user_register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     try:
+        
+        
+        #* Check If The User Email|Phone_number is taken:
+        email_query = db.query(models.User).filter(models.User.email == user.email)
+        phone_number_query = db.query(models.User).filter(models.User.phone_number == user.phone_number)
+        
+         
+        if (email_query.first() or phone_number_query.first()) is not None:
+            raise HTTPException( 
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Invaild Credentials"
+            )
+        
+        
+        
         #* hash user password
         user.password = hash_pwd(user.password)
 
-        #* un-pack the dict in 
+        #* un-pack the dict in User-model
         new_user = models.User(**user.dict())
         # true insertion to database
         db.add(new_user)
@@ -33,6 +48,9 @@ def user_register(user: schemas.UserRegister, db: Session = Depends(get_db)):
         db.refresh(new_user)
 
         return new_user
+    
+    except HTTPException:
+        raise
     
     except Exception as err:
         print(f"[red bold][✖][/red bold] Error: [yellow]{err}[/yellow]\n[green][➔][/green] {__file__}")

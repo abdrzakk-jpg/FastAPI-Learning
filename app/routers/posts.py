@@ -1,8 +1,9 @@
-from sqlalchemy import func
+import sqlalchemy
+from sqlalchemy import func, Row
 from app.oauth2 import get_user
 from app import oauth2
 from fastapi import  status, HTTPException , Depends, APIRouter
-from typing import List, Optional
+from typing import List, Optional, Any
 from rich import print
 from sqlalchemy.orm import Session
 from .. import models, schemas
@@ -37,8 +38,9 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), author:
         db.add(created_post)
         db.commit() # save changes
         db.refresh(created_post)
-
-        return created_post
+        print(f"[blue]{post}[/blue]")
+        print(f"[blue]{created_post}[/blue]")
+        return schemas.PostResponse(Post=created_post, votes=0) #* votes=0 on create-time
     
     except Exception as err:
         print(f"[red bold][✖][/red bold] Error: [yellow]{err}[/yellow]\n[green][➔][/green] {__file__}")
@@ -46,6 +48,8 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), author:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=err
         )
+        
+        
 #* get post by ID
 # #? response_model=schemas.PostResponse => set response structure
 @router.get("/{post_id}", response_model=schemas.PostResponse)
@@ -113,32 +117,44 @@ def delete_post(post_id: int, db: Session = Depends(get_db), author: schemas.Use
 
 #* add update post route using "PUT"
 @router.put("/{post_id}", response_model=schemas.PostResponse)
-def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(get_db), author: schemas.User  = Depends(oauth2.get_user)):   
+def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(get_db), author: schemas.User  = Depends(oauth2.get_user)):
+       
     try: 
-
-        # get the post
-        post_query = db.query(models.Post).filter(models.Post.id == post_id)
-
-        updated_post = post_query.first()
-
+        post_query = db.query(models.Post, func.count(models.Vote.post_id).label("votes")).join(models.Vote, models.Post.id == models.Vote.post_id, isouter=True)
+        grouping_filter = post_query.filter(models.Post.author_id == author.id).group_by(models.Post.id)
+        target_post = grouping_filter.filter(models.Post.id == post_id) # the result is a tuple(or row) of (Post, votes)
+        
+        # target_post = db.query(models.Post).filter(models.Post.id == post_id, models.Post.author_id == author.id)
+        
         # catch the first one
-        if updated_post is None:
+        to_update_post, votes = target_post.first()
+        
+        # check if it None
+        if to_update_post is None:
             raise HTTPException( 
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Not Found"
             )
 
-        if updated_post.author_id != author.id:
+        # make-Sure if it belongs to correct user
+        if to_update_post.author_id != author.id:
             raise HTTPException( 
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Not Allowed"
             )
-
-        # pyrefly: ignore [bad-argument-type]
-        post_query.update(post.model_dump(), synchronize_session=False) # ignore 
+        
+        
+        db.query(models.Post).filter(models.Post.author_id == author.id, models.Post.id == post_id).update({**post.model_dump(exclude_unset=True)}, synchronize_session="evaluate") 
         db.commit() # save changes
-        db.refresh(updated_post)
-        return updated_post
+        db.refresh(to_update_post)
+        
+        return schemas.PostResponse(
+            Post={
+            **post.model_dump(),
+            "id" : post_id,
+            "created_at": to_update_post.created_at,
+            "author_id": to_update_post.author_id
+            }, votes=votes)
 
     # * tell `try:` to avoid HTTPException's
     except HTTPException:
