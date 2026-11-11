@@ -41,8 +41,7 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), author:
         return created_post
     
     except Exception as err:
-        print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
-        print(f"[red bold]|____Error:[/red bold]{err}")
+        print(f"[red bold][✖][/red bold] Error: [yellow]{err}[/yellow]\n[green][➔][/green] {__file__}")
         raise HTTPException( 
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=err
@@ -68,8 +67,7 @@ def get_post(post_id: int, db: Session = Depends(get_db), ):
         raise 
 
     except Exception as err:
-        print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
-        print(f"[red bold]|____Error:[/red bold]{err}")
+        print(f"[red bold][✖][/red bold] Error: [yellow]{err}[/yellow]\n[green][➔][/green] {__file__}")
         raise HTTPException( 
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=err
@@ -106,8 +104,7 @@ def delete_post(post_id: int, db: Session = Depends(get_db), author: schemas.Use
         raise 
 
     except Exception as err:
-        print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
-        print(f"[red bold]|____Error:[/red bold]{err}")
+        print(f"[red bold][✖][/red bold] Error: [yellow]{err}[/yellow]\n[green][➔][/green] {__file__}")
         raise HTTPException( 
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=err
@@ -146,10 +143,9 @@ def update_post(post_id: int, post: schemas.PostUpdate, db: Session = Depends(ge
     # * tell `try:` to avoid HTTPException's
     except HTTPException:
         raise 
-    #* just to commit to git
+    
     except Exception as err:
-        print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
-        print(f"[red bold]|____Error:[/red bold]{err}")
+        print(f"[red bold][✖][/red bold] Error: [yellow]{err}[/yellow]\n[green][➔][/green] {__file__}")
         raise HTTPException( 
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=err

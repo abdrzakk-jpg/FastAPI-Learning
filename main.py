@@ -3,7 +3,6 @@ from scalar_fastapi import Theme
 from scalar_fastapi import Layout
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from scalar_fastapi import get_scalar_api_reference # UI enhancement
 from app.routers import posts, users, auth, votes
 from app.database import engine

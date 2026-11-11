@@ -1,4 +1,5 @@
 
+from rich import print
 from app.oauth2 import create_token
 from fastapi import Depends, HTTPException, status, APIRouter
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm  # to set sended-data Form (OAuth2 standard)
@@ -47,8 +48,7 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session =
         raise 
 
     except Exception as err:
-        print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
-        print(f"[red bold]|____Error:[/red bold]{err}")
+        print(f"[red bold][✖][/red bold] Error: [yellow]{err}[/yellow]\n[green][➔][/green] {__file__}")
         raise HTTPException( 
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=err

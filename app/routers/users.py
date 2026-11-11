@@ -35,8 +35,7 @@ def user_register(user: schemas.UserRegister, db: Session = Depends(get_db)):
         return new_user
     
     except Exception as err:
-        print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
-        print(f"[red bold]|____Error:[/red bold]{err}")
+        print(f"[red bold][✖][/red bold] Error: [yellow]{err}[/yellow]\n[green][➔][/green] {__file__}")
         raise HTTPException( 
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=err
@@ -63,8 +62,7 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
         raise 
 
     except Exception as err:
-        print(f"[blue bold]:: [white]DB Query-Execution: [red bold][✖][/red bold]")
-        print(f"[red bold]|____Error:[/red bold]{err}")
+        print(f"[red bold][✖][/red bold] Error: [yellow]{err}[/yellow]\n[green][➔][/green] {__file__}")
         raise HTTPException( 
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=err
