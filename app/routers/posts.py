@@ -1,5 +1,6 @@
-import sqlalchemy
-from sqlalchemy import func, Row
+
+
+from sqlalchemy import func
 from app.oauth2 import get_user
 from app import oauth2
 from fastapi import  status, HTTPException , Depends, APIRouter

@@ -1,9 +1,7 @@
 
 from fastapi import status, HTTPException, Depends, APIRouter
-
 from rich import print
 from sqlalchemy.orm import Session 
-
 from .. import models, schemas
 from ..utils import hash_pwd, get_db
 
