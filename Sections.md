@@ -149,7 +149,7 @@
 122. Alembic migrations on production database 12:42:24 ✅
 123. Gunicorn 12:45:57 ✅
 124. Creating a Systemd service 12:54:12 ✅
-125. NGINX 13:04:45
+125. NGINX 13:04:45 ✅
 126. Setting up Domain name 13:10:45
 127. SSL/HTTPS 13:15:19
 128. NGINX enable 13:19:31
