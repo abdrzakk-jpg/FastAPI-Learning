@@ -16,9 +16,24 @@ if settings.ENVIRONMENT == "production":
 
 
 app = FastAPI(  
-    docs_url=None,   # تعطيل Swagger
-    redoc_url=None,  # تعطيل ReDoc
+    docs_url=None if settings.ENVIRONMENT == "development"  else "",   # تعطيل Swagger
+    redoc_url=None if settings.ENVIRONMENT == "development"  else "",  # تعطيل ReDoc
 )
+
+
+if settings.ENVIRONMENT == "development":
+#* ===================|Updating-Docs-UI|=================== *#
+    @app.get("/docs", include_in_schema=False)
+    async def scalar_docs():
+        return get_scalar_api_reference(
+            openapi_url=app.openapi_url,
+            layout=Layout.CLASSIC,
+            theme=Theme.DEEP_SPACE,
+            title="API Docs",
+        )
+#* ======================================================== *#
+
+
 origins = [
     "https://www.google.com",
 ]
@@ -31,23 +46,9 @@ app.add_middleware(
     allow_headers=["*"], # 
 )
 
-
-#* ===================|Updating-Docs-UI|=================== *#
-@app.get("/docs", include_in_schema=False)
-async def scalar_docs():
-    return get_scalar_api_reference(
-        openapi_url=app.openapi_url,
-        layout=Layout.CLASSIC,
-        theme=Theme.DEEP_SPACE,
-        title="API Docs",
-    )
-#* ======================================================== *#
-
 @app.get("/") # "/" => path, .get => method 
 def root():
     return {"msg":"hello api !!!"} 
-
-
 
 #* add routers 
 app.include_router(posts.router)

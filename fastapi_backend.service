@@ -1,0 +1,15 @@
+[Unit]
+Description=A Systemd service runner for app backend
+After=network.target
+
+[Service]
+User=abdrzakk
+Group=abdrzakk
+WorkingDirectory=/home/abdrzakk/FastAPI-Learning/
+Environment="PATH=/home/abdrzakk/FastAPI-Learning/.venv/bin"
+ExecStart=/home/abdrzakk/FastAPI-Learning/.venv/bin/gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000
+
+
+
+[Install] 
+WantedBy=multi-user.target # NOTE: this line helps to start-up the service on every boot-action
