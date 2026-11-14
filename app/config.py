@@ -1,6 +1,8 @@
 
 
 
+import sys
+from rich import print
 from pydantic_settings import BaseSettings
 
 
@@ -20,5 +22,9 @@ class Settings(BaseSettings):
     class Config: #*=> to set env vars source
         env_file = ".env"
 
-# create an instance
-settings = Settings()
+try: 
+    # create an instance
+    settings = Settings()
+except Exception as exc:
+    print("[red][!][/red] env-file: some vars is missing or file doesn't exists ")
+    sys.exit(-1)

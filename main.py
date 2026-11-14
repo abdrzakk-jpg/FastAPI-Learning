@@ -1,4 +1,5 @@
 
+from pydantic import ValidationError
 from scalar_fastapi import Theme
 from scalar_fastapi import Layout
 from fastapi import FastAPI
@@ -8,6 +9,9 @@ from app.routers import posts, users, auth, votes
 from app.database import engine
 import app.models as models
 from app.config import settings
+
+
+
 
 
 if settings.ENVIRONMENT == "production":
