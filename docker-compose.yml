@@ -1,0 +1,9 @@
+version: "3"
+services:
+ api:
+  build: .
+  env_file:
+    - .env
+  ports:
+  # <app port>:<equivalent port on container>
+    - "8000:8000"
