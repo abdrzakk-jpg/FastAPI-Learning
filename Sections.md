@@ -150,14 +150,14 @@
 123. Gunicorn 12:45:57 ✅
 124. Creating a Systemd service 12:54:12 ✅
 125. NGINX 13:04:45 ✅
-126. Setting up Domain name 13:10:45
-127. SSL/HTTPS 13:15:19
-128. NGINX enable 13:19:31
-129. Firewall 13:20:06
-130. Pushing code changes to Production 13:23:47
+126. Setting up Domain name 13:10:45 ❌ `UN-DONE-STEP`
+127. SSL/HTTPS 13:15:19 ❌ `UN-DONE-STEP`
+128. NGINX enable 13:19:31 ❌ `UN-DONE-STEP`
+129. Firewall 13:20:06 ❌ `UN-DONE-STEP`
+130. Pushing code changes to Production 13:23:47 ❌ `UN-DONE-STEP`
 
 ### Section 15: Docker
-131. Dockerfile 13:26:09
+131. Dockerfile 13:26:09 ✅
 132. Docker Compose 13:38:39
 133. Postgres Container 13:48:34
 134. Bind Mounts 13:56:22
@@ -177,7 +177,7 @@
 146. FastAPI TestClient 15:06:07
 147. Pytest flags 15:14:26
 148. Test create user 15:17:31
-149. Setup testing database 15:25:23
+	149. Setup testing database 15:25:23
 150. Create & destroy database after each test 15:36:47
 151. More Fixtures to handle database interaction 15:44:18
 152. Trailing slashes in path 15:50:35

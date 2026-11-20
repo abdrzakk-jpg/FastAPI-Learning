@@ -1,5 +1,4 @@
 
-from pydantic import ValidationError
 from scalar_fastapi import Theme
 from scalar_fastapi import Layout
 from fastapi import FastAPI
