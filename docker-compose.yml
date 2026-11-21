@@ -1,9 +1,25 @@
-version: "3"
 services:
- api:
-  build: .
-  env_file:
-    - .env
-  ports:
-  # <app port>:<equivalent port on container>
-    - "8000:8000"
+  api:
+    build: .
+    env_file:
+      - .env
+    ports:
+      # <host_port>:<container_port>
+      - "8000:8000"
+
+    depends_on: #* this line insure that the `postgres` service (wich is the database) is ready
+      - postgres
+
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports: # decide connection ports between app & postgresql
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+
+volumes:
+  pgdata:
